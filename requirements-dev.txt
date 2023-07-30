@@ -1,0 +1,5 @@
+virtualenv
+pylint
+pytest
+black
+isort
