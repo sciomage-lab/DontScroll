@@ -11,6 +11,8 @@ on:
       - 'FEAT/**'
   pull_request:
     branches: [ "main" ]
+  repository_dispatch:
+    types: [custom_event]
 
 permissions:
   contents: read
