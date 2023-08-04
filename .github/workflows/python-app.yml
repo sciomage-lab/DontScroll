@@ -24,7 +24,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest ]
-        python-version: [ '3.7', '3.8', '3.9', '3.10' ]
+        python-version: [ '3.8', '3.9', '3.10' ]
 
     # Target OS
     runs-on: ${{ matrix.os }}
@@ -34,20 +34,10 @@ jobs:
 
     # Target Python version
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-
-    # Cache
-    - name: Cache dependencies
-      uses: actions/cache@v2
-      with:
-        path: ${{ env.HOME }}/.cache/pip
-        key: ${{ runner.os }}-deps-${{ hashFiles('requirements*.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-deps-
-        if: |
-          needs.build.result == 'success' || needs.build.result == 'failure' || needs.build.result == 'cancelled' || needs.build.outputs.cache-hit != 'true'
+        cache: 'pip'
 
     # PYTHONPATH for Linux
     - name: Set up PYTHONPATH
