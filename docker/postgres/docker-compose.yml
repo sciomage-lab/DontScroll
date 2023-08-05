@@ -4,8 +4,8 @@ services:
     image: cude-postgres:13
     restart: always
     environment:
-      POSTGRES_PASSWORD: cude_postgres_password
-      POSTGRES_USER: cude_postgres 
+      POSTGRES_USER: dont_scroll
+      POSTGRES_PASSWORD: passwd
       POSTGRES_DB: mydatabase
     volumes:
       - postgresql_data:/var/lib/postgresql/data
@@ -18,7 +18,7 @@ services:
     image: dpage/pgadmin4:latest
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: user@example.com
+      PGADMIN_DEFAULT_EMAIL: dont@scroll.com
       PGADMIN_DEFAULT_PASSWORD: secret
       PGADMIN_LISTEN_PORT: 80
     volumes:

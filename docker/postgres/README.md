@@ -15,12 +15,12 @@ docker-compose down
 ## Connect pgadmin
 
 - URL : 127.0.0.1:8080
-- mail : user@example.com
+- mail : dont@scroll.com
 - pw : secret
 
 - localhost : postgresql
-- user : cude_postgres
-- pw : cude_postgres_password
+- user : dont_scroll
+- pw : passwd
 
 ## docker volume
 
