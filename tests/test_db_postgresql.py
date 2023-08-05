@@ -13,6 +13,7 @@ DB_TABLE = "public.slack_message"
 
 
 # TODO : config
+@pytest.mark.skip_docker
 @pytest.mark.parametrize(
     "host, port, user, password, dbname, is_pass",
     [
@@ -42,6 +43,8 @@ DB_TABLE = "public.slack_message"
         ),
     ],
 )
+
+@pytest.mark.skip_docker
 def test_db_connect(host, port, user, password, dbname, is_pass):
     """
     Similar images
@@ -72,6 +75,7 @@ def get_db_client():
     return db_client
 
 
+@pytest.mark.skip_docker
 @pytest.fixture(scope="module")
 def db():
     db_client = get_db_client()
@@ -82,7 +86,7 @@ def db():
 def generate_random_string(length=10):
     return "".join(random.choice(string.ascii_letters) for _ in range(length))
 
-
+@pytest.mark.skip_docker
 def test_db_insert_select_delete(db):
     # randon data
     random_data = generate_random_string()
