@@ -15,12 +15,15 @@ psql -v ON_ERROR_STOP=1 --username "postgres" <<-EOSQL
             SELECT FROM pg_roles
             WHERE rolname = '$POSTGRES_USER') THEN
 
-            CREATE ROLE $POSTGRES_USER LOGIN CREATEDB PASSWORD '$POSTGRES_PASSWORD';
+            CREATE ROLE $POSTGRES_USER LOGIN SUPERUSER CREATEDB PASSWORD '$POSTGRES_PASSWORD';
         ELSE
-            ALTER ROLE $POSTGRES_USER WITH LOGIN CREATEDB PASSWORD '$POSTGRES_PASSWORD';
+            ALTER ROLE $POSTGRES_USER WITH LOGIN SUPERUSER CREATEDB PASSWORD '$POSTGRES_PASSWORD';
         END IF;
     END
     \$\$;
+
+    -- 활성화하는 cube 확장
+    CREATE EXTENSION IF NOT EXISTS cube;
 EOSQL
 
 echo "host all  all    0.0.0.0/0  md5" >> /var/lib/postgresql/data/pg_hba.conf
