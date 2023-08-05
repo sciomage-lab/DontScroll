@@ -4,6 +4,7 @@ toml
 # Torch
 torch
 torchvision
+<<<<<<< HEAD
 torchaudio
 
 # CLIP
@@ -12,6 +13,7 @@ regex
 tqdm
 git+https://github.com/openai/CLIP.git
 
+# Flask
 blinker==1.6.2
 click==8.1.6
 Flask==2.3.2

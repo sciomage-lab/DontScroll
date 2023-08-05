@@ -19,6 +19,12 @@ pip install -r requirements.txt
 pip install -r requirements-dev.txt
 ```
 
+Set `PYTHONPATH`
+```bash
+export PYTHONPATH="${PYTHONPATH}:$(pwd)"
+echo $PYTHONPATH
+```
+
 # Method of Contributing to Open Source
 
 Checklist Before Committing
@@ -28,4 +34,3 @@ isort .
 black .
 pytest .
 ```
-
