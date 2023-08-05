@@ -1,8 +1,8 @@
 
-## Build cude-postgres image
+## Build cube-postgres image
 
 ```bash
-docker build -t cude-postgres:13 .
+docker build -t cube-postgres:13 .
 ```
 
 ## run docker-compose
@@ -28,6 +28,8 @@ docker-compose down
 docker volume ls
 docker volume inspect {VOLUME NAME}
 docker volume rm [VOLUME_NAME]
+docker volume rm postgres_pgadmin_data
+docker volume rm postgres_postgresql_data
 docker volume prune
 ```
 

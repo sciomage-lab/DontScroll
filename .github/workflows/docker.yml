@@ -1,7 +1,4 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-
-name: Python application
+name: Docker build and test
 
 on:
   push:
@@ -11,29 +8,19 @@ on:
       - 'FEAT/**'
   pull_request:
     branches: [ "main" ]
-  repository_dispatch:
-    types: [custom_event]
-
-permissions:
-  contents: read
+  workflow_dispatch:
 
 jobs:
-  build:
-
-    # Target OS and Python version
+  build-and-test:
+    runs-on: self-hosted
     strategy:
       matrix:
-        # self-hosted is Ubuntu 20.04.6 LTS
-        os: [ self-hosted, windows-latest ]
-        python-version: [ '3.7', '3.8', '3.9', '3.10' ]
-
-    # Target OS
-    runs-on: ${{ matrix.os }}
-
+        os: [ self-hosted ]
+        python-version: ['3.7', '3.8', '3.9', '3.10']
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-    # Target Python version (cache)
     - name: Set up Python (Github Host, cache)
       uses: actions/setup-python@v4
       with:
@@ -41,7 +28,6 @@ jobs:
         cache: 'pip'
       if: matrix.os == 'ubuntu-latest' || matrix.os == 'windows-latest'
 
-    # Target Python version (non-cache)
     - name: Set up Python (Self Host, non-cache)
       uses: actions/setup-python@v4
       with:
@@ -52,13 +38,30 @@ jobs:
     - name: Set up PYTHONPATH (Linux)
       run: |
         echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
-      if: matrix.os == 'ubuntu-latest' || matrix.os == 'self-hosted'
+      if: matrix.os == 'ubuntu-latest' ||  matrix.os == 'self-hosted'
 
     # PYTHONPATH for Windows
-    - name: Set up PYTHONPATH (Windws)
+    - name: Set up PYTHONPATH (Windows)
       run: |
         echo "PYTHONPATH=$env:GITHUB_WORKSPACE" >> $env:GITHUB_ENV
       if: matrix.os == 'windows-latest'
+
+    - name: Stop Docker containers
+      run: |
+        cd docker/postgres
+        ./stop.sh
+
+    - name: Build Docker image
+      run: |
+        docker build -t cube-postgres:13 docker/postgres/
+
+    - name: Start Docker containers
+      run: |
+        cd docker/postgres
+        docker-compose up -d
+
+    - name: Wait for 10 seconds
+      run: sleep 10
 
     # Install dependencies for Linux
     - name: Install dependencies (Linux)
@@ -78,7 +81,7 @@ jobs:
         if (Test-Path requirements-dev.txt) { pip install -r requirements-dev.txt }
       if: matrix.os == 'windows-latest'
 
-    - name: Test with pytest
-      run: |
-        pytest -k "not skip_docker"
+    - name: Run pytest
+      run: pytest tests/test_db_postgresql.py
+
 

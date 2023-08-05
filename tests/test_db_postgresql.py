@@ -26,14 +26,6 @@ DB_TABLE = "public.slack_message"
             True,
         ),
         (
-            "127.0.0.2",
-            5432,
-            "dont_scroll",
-            "passwd",
-            "dont_scroll_db",
-            False,
-        ),
-        (
             "127.0.0.1",
             5433,
             "dont_scroll",
@@ -41,6 +33,15 @@ DB_TABLE = "public.slack_message"
             "dont_scroll_db",
             False,
         ),
+        (
+            "127.0.0.1",
+            5432,
+            "dont_scroll_2",
+            "passwd_2",
+            "dont_scroll_db",
+            False,
+        ),
+
     ],
 )
 

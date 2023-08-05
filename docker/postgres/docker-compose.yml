@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   postgresql:
-    image: cude-postgres:13
+    image: cube-postgres:13
     restart: always
     environment:
       POSTGRES_USER: dont_scroll

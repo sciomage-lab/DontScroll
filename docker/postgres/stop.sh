@@ -3,4 +3,5 @@
 docker-compose down
 
 docker volume ls
-docker volume prune
+docker volume rm postgres_pgadmin_data
+docker volume rm postgres_postgresql_data
