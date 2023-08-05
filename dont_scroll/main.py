@@ -1,46 +1,43 @@
+import os
+import sys
+import argparse
+import toml
 from flask import Flask
-from slackeventsapi import SlackEventAdapter
+import config
+from logger import applogger, set_all_logger_debug_mode
 
 
-# This `app` represents your existing Flask app
-app = Flask(__name__)
-
-# An example of one of your Flask app's routes
-@app.route("/")
-def hello():
-  print("hello")
-  return "Hello there!"
-
-
-# Bind the Events API route to your existing Flask app by passing the server
-# instance as the last param, or with `server=app`.
-
-SLACK_SIGNING_SECRET="9e367578fe0fd95c6df91c40bec6e533"
-slack_events_adapter = SlackEventAdapter(SLACK_SIGNING_SECRET, "/slack/events", app)
-
-
-# Create an event listener for "reaction_added" events and print the emoji name
-@slack_events_adapter.on("reaction_added")
-def reaction_added(event_data):
-  emoji = event_data["event"]["reaction"]
-  print("이모지 달았다")
-  print(emoji)
-
-# Create an event listener for "reaction_added" events and print the emoji name
-@slack_events_adapter.on("message.im")
-def on_message(event_data):
-  print(event_data)
-
-@slack_events_adapter.on("message")
-def handle_message(event_data):
-  print(event_data)
-
-@slack_events_adapter.on("message.channels")
-def handle_channel_message(event_data):
-  print(event_data)
-
+def initialize(args):
+  r"""
+  Find SLACK_SIGNING_SECRET key
+  """
+  global SLACK_SIGNING_SECRET
+  return config.load(args.config)
 
 
 # Start the server on port 3000
 if __name__ == "__main__":
-  app.run(port=3000, debug=True)
+  parser = argparse.ArgumentParser(add_help=True, description=r"""
+      Please provide SLACK_SIGNING_SECRET key through environment variable or config file.
+      Config file is located in $HOMEDIR/.config/dont_scroll/config.toml
+  """)
+  parser.add_argument('--debug', action='store_true', help="Show more detail")
+  parser.add_argument('--port', metavar="NUMBER", type=int, default=3000)
+  parser.add_argument('--config', 
+                      default=os.path.join(os.path.expanduser("~"), ".config/dont_scroll/config.toml"),
+                      help="Config file path", metavar="PATH", type=str)
+  args = parser.parse_args()
+
+  if args.debug:
+    set_all_logger_debug_mode()
+
+  if initialize(args):
+    app = Flask(__name__)
+
+    import slack_event_listener
+    app.register_blueprint(slack_event_listener.blueprint)
+
+    app.run(port=args.port, debug=args.debug)
+  else:
+    applogger.critical("App cannot be started")
+

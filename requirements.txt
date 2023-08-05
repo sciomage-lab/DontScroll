@@ -4,7 +4,6 @@ toml
 # Torch
 torch
 torchvision
-<<<<<<< HEAD
 torchaudio
 
 # CLIP

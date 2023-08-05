@@ -38,6 +38,7 @@ def test_different_images(image1, image2, similarity):
     ret = cos_sim(a, b)
     assert ret < similarity
 
+
 if __name__ == "__main__":
     test_similar_images()
     test_different_images()
