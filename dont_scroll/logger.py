@@ -11,7 +11,7 @@ from slack_sdk import WebClient
 # 1, url에서 앱을 만들고
 # 2, 좌측 OAuth & Permission에 들어가서
 # 3, Scopes 추가, "app_mentions:read, channels:history"는 기본으로 추가하고 필요하면 더 추가
-auth_token = "xoxb-5683781764640-5663727658034-ZNQxVv5MPUcbHyeudVtUIKKj"
+auth_token = ""
 
 # channel id - https://api.slack.com/methods/conversations.list/test
 # 1, url들아가면 tester페이지가 나옴
