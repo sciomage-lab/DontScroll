@@ -21,10 +21,27 @@ psql -v ON_ERROR_STOP=1 --username "postgres" <<-EOSQL
         END IF;
     END
     \$\$;
+ 
+    -- 데이터베이스 생성
+    CREATE DATABASE dont_scroll_db;
 
+    -- 사용자에게 권한 부여 (예: 사용자명이 "myuser"라 가정)
+    GRANT ALL PRIVILEGES ON DATABASE dont_scroll_db TO $POSTGRES_USER;
+EOSQL
+
+psql -d dont_scroll_db -v ON_ERROR_STOP=1 --username $POSTGRES_USER <<-EOSQL
     -- 활성화하는 cube 확장
     CREATE EXTENSION IF NOT EXISTS cube;
+
+    CREATE TABLE IF NOT EXISTS public.slack_message (
+        id SERIAL PRIMARY KEY,
+        vector CUBE,
+        url TEXT
+    );
+    ALTER TABLE public.slack_message OWNER to $POSTGRES_USER;
 EOSQL
+
+
 
 echo "host all  all    0.0.0.0/0  md5" >> /var/lib/postgresql/data/pg_hba.conf
 
