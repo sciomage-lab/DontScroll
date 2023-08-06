@@ -15,7 +15,7 @@ pip install -r requirements-dev.txt
 
 # How to start
 ```sh
- python main.py
+python main.py
 ```
 
 ## Options

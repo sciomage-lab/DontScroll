@@ -27,3 +27,11 @@ def load(path:str):
         """)
 
         return False
+
+    if "BOT_USER_OAUTH_TOKEN" not in globals().keys():
+        applogger.critical(r"""
+            Please provide BOT_USER_OAUTH_TOKEN key
+            through environment variable or config file.
+        """)
+
+        return False

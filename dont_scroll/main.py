@@ -34,7 +34,7 @@ if __name__ == "__main__":
   if initialize(args):
     app = Flask(__name__)
 
-    import slack_event_listener
+    from webhook import slack_event_listener
     app.register_blueprint(slack_event_listener.blueprint)
 
     app.run(port=args.port, debug=args.debug)
