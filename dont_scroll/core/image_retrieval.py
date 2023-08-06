@@ -58,7 +58,27 @@ class ImageRetrieval:
         if __debug__:
             print(f"image_features : {image_features[0, :3]}")
             print(f"image_features : {image_features.shape}")
+
+        image_features /= image_features.norm(dim=-1, keepdim=True)
         return image_features[0]
+
+    def vectorization(self, image: str, text: str):
+        """Vectorization
+        :param str image: image path
+        :param str text: text
+        :return: vectorized vector
+        """
+
+        image = self.preprocess(Image.open(image_path)).unsqueeze(0).to(self.device)
+        text = clip.tokenize([text]).to(device)
+
+        with torch.no_grad():
+            image_features = self.model.encode_image(image)
+            text_features = self.model.encode_text(text)
+
+        logits_per_image, logits_per_text = self.model(image, text)
+
+        return logits_per_image, logits_per_text
 
 
 if __name__ == "__main__":

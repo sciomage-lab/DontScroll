@@ -13,7 +13,16 @@ class PostgreSQLClient:
     """
     PostgreSQL Client
     """
-    def __init__(self, host: str, port: int, user: str, password: str, db_name: str, db_table: str):
+
+    def __init__(
+        self,
+        host: str,
+        port: int,
+        user: str,
+        password: str,
+        db_name: str,
+        db_table: str,
+    ):
         """
         Init connect PostgreSQL
         :param host:
@@ -99,13 +108,13 @@ class PostgreSQLClient:
         return None
 
     # Delete
-    def delete_data(self, condition: str, params: list=None):
+    def delete_data(self, condition: str, params: list = None):
         """Delete
         :param str condition: HINT) "url = %s"
         :param list params: HINT) ["http://aaa"]
         """
-        query = f"DELETE FROM {self.db_table} WHERE {condition};"
-        self.execute_query(query, params)
+        query = f"DELETE FROM {self.db_table} WHERE {condition} = ANY(%s);"
+        self.execute_query(query, (params,))
         self.connection.commit()
 
     def close(self):
@@ -141,6 +150,6 @@ if __name__ == "__main__":
         print(row)
 
     # Delete
-    client.delete_data("url = %s", ["http://aaa"])
+    client.delete_data("url", ["http://aaa"])
 
     client.close()

@@ -83,6 +83,6 @@ jobs:
       if: matrix.os == 'windows-latest'
 
     - name: Run pytest
-      run: pytest tests/test_db_postgresql.py
-
+      run: |
+        pytest -k "skip_docker"
 

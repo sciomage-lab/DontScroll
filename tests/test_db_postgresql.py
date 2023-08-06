@@ -109,7 +109,7 @@ def test_db_insert_select_delete(db):
     assert result[0]["url"] == random_data
 
     # delete
-    db.delete_data("url = %s", [random_data])
+    db.delete_data("url", [random_data])
     result_after_delete = db.select_data(f"url='{random_data}'")
     assert result_after_delete is None, "데이터 삭제 실패"
 

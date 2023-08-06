@@ -32,6 +32,10 @@ class SearchEngine:
             print("DB connect fail")
 
     def add_vector(self, vector: list, url: str):
+        """Add vector
+        :param list vector: input vector
+        :param str url: input url
+        """
         data = {
             "vector": f"CUBE(ARRAY[{vector}])",
             "url": url,
@@ -79,4 +83,4 @@ if __name__ == "__main__":
     print(ret[2]["url"])
 
     # Delete
-    # search.db_client.delete_data("url = %s", [test_url])
+    search.db_client.delete_data("url", [image_path_1, image_path_3, image_path_4])
