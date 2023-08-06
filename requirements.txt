@@ -1,8 +1,6 @@
 # Configs
 toml
-<<<<<<< HEAD
 psycopg2
-=======
 
 # Torch
 torch
@@ -13,4 +11,3 @@ ftfy
 regex
 tqdm
 git+https://github.com/openai/CLIP.git
->>>>>>> main
