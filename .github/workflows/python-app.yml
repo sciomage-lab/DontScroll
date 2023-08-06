@@ -23,9 +23,8 @@ jobs:
     # Target OS and Python version
     strategy:
       matrix:
-        # self-hosted is Ubuntu 20.04.6 LTS
-        os: [ self-hosted, windows-latest ]
-        python-version: [ '3.7', '3.8', '3.9', '3.10' ]
+        os: [ ubuntu-latest, windows-latest ]
+        python-version: [ '3.8', '3.9', '3.10' ]
 
     # Target OS
     runs-on: ${{ matrix.os }}
@@ -81,4 +80,3 @@ jobs:
     - name: Test with pytest
       run: |
         pytest -k "not skip_docker"
-
