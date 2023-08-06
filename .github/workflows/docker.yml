@@ -21,17 +21,18 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Python (Github Host, cache)
+    - name: Set up Python (Github Host)
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
         cache: 'pip'
       if: matrix.os == 'ubuntu-latest' || matrix.os == 'windows-latest'
 
-    - name: Set up Python (Self Host, non-cache)
+    - name: Set up Python (Self Host)
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+        cache: 'pip'
       if: matrix.os == 'self-hosted'
 
     # PYTHONPATH for Linux

@@ -1,6 +1,7 @@
 
 ## Build cube-postgres image
 
+Build postgres:13
 ```bash
 docker build -t cube-postgres:13 .
 ```

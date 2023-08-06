@@ -15,7 +15,7 @@ DB_TABLE = "public.slack_message"
 # TODO : config
 @pytest.mark.skip_docker
 @pytest.mark.parametrize(
-    "host, port, user, password, dbname, is_pass",
+    "host, port, user, password, db_name, db_table, is_pass",
     [
         (
             "127.0.0.1",
@@ -23,6 +23,7 @@ DB_TABLE = "public.slack_message"
             "dont_scroll",
             "passwd",
             "dont_scroll_db",
+            "public.slack_message",
             True,
         ),
         (
@@ -31,6 +32,7 @@ DB_TABLE = "public.slack_message"
             "dont_scroll",
             "passwd",
             "dont_scroll_db",
+            "public.slack_message",
             False,
         ),
         (
@@ -39,14 +41,13 @@ DB_TABLE = "public.slack_message"
             "dont_scroll_2",
             "passwd_2",
             "dont_scroll_db",
+            "public.slack_message",
             False,
         ),
-
     ],
 )
-
 @pytest.mark.skip_docker
-def test_db_connect(host, port, user, password, dbname, is_pass):
+def test_db_connect(host, port, user, password, db_name, db_table, is_pass):
     """
     Similar images
     """
@@ -56,7 +57,8 @@ def test_db_connect(host, port, user, password, dbname, is_pass):
         port=port,
         user=user,
         password=password,
-        dbname=dbname,
+        db_name=db_name,
+        db_table=db_table,
     )
 
     if is_pass:
@@ -71,7 +73,8 @@ def get_db_client():
         port=DB_PORT,
         user=DB_USER,
         password=DB_PASSWORD,
-        dbname=DB_NAME,
+        db_name=DB_NAME,
+        db_table=DB_TABLE,
     )
     return db_client
 
@@ -87,6 +90,7 @@ def db():
 def generate_random_string(length=10):
     return "".join(random.choice(string.ascii_letters) for _ in range(length))
 
+
 @pytest.mark.skip_docker
 def test_db_insert_select_delete(db):
     # randon data
@@ -97,16 +101,16 @@ def test_db_insert_select_delete(db):
     }
 
     # insert
-    db.insert_data(DB_TABLE, data)
+    db.insert_data(data)
 
     # select
-    result = db.select_data(DB_TABLE, f"url='{random_data}'")
+    result = db.select_data(f"url='{random_data}'")
     assert result is not None, "데이터 선택 실패"
     assert result[0]["url"] == random_data
 
     # delete
-    db.delete_data(DB_TABLE, "url = %s", [random_data])
-    result_after_delete = db.select_data(DB_TABLE, f"url='{random_data}'")
+    db.delete_data("url = %s", [random_data])
+    result_after_delete = db.select_data(f"url='{random_data}'")
     assert result_after_delete is None, "데이터 삭제 실패"
 
 

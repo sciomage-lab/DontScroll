@@ -33,7 +33,7 @@ jobs:
     - uses: actions/checkout@v3
 
     # Target Python version (cache)
-    - name: Set up Python (Github Host, cache)
+    - name: Set up Python (Github Host)
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
@@ -41,10 +41,11 @@ jobs:
       if: matrix.os == 'ubuntu-latest' || matrix.os == 'windows-latest'
 
     # Target Python version (non-cache)
-    - name: Set up Python (Self Host, non-cache)
+    - name: Set up Python (Self Host)
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+        cache: 'pip'
       if: matrix.os == 'self-hosted'
 
     # PYTHONPATH for Linux

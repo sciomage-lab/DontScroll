@@ -31,11 +31,7 @@ class ImageRetrieval:
         Correlation between Images and Text
         :param image_path: image path
         """
-        image = (
-            self.preprocess(Image.open(image_path))
-            .unsqueeze(0)
-            .to(self.device)
-        )
+        image = self.preprocess(Image.open(image_path)).unsqueeze(0).to(self.device)
         text = clip.tokenize(["a hedgehog", "a dog", "a cat"]).to(self.device)
 
         with torch.no_grad():
@@ -58,8 +54,10 @@ class ImageRetrieval:
         with torch.no_grad():
             image_features = self.model.encode_image(image)
 
-        print(f"image_features : {image_features[0, :3]}")
-        print(f"image_features : {image_features.shape}")
+        # TODO: logger
+        if __debug__:
+            print(f"image_features : {image_features[0, :3]}")
+            print(f"image_features : {image_features.shape}")
         return image_features[0]
 
 
@@ -69,6 +67,6 @@ if __name__ == "__main__":
 
     a = image_retrieval.image_to_vector("./tests/images/hedgehog1.jpg")
     b = image_retrieval.image_to_vector("./tests/images/hedgehog2.jpg")
-    
+
     ret = cos_sim(a, b)
     print(f"ret : {ret}")
