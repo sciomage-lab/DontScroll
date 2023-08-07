@@ -1,3 +1,4 @@
+import sys
 import logging
 
 
@@ -25,16 +26,23 @@ class CustomFormatter(logging.Formatter):
         return formatter.format(record)
 
 
-logging.basicConfig(encoding="utf-8", level=logging.INFO)
 applogger = logging.Logger("DontScroll App logger")
-formatter = logging.Formatter(
-    fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-
 
 # Console stdout
 stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(CustomFormatter())
+
+# Check Python version
+if sys.version_info[:2] >= (3, 9):
+    # Python version 3.9 or higher
+    logging.basicConfig(encoding="utf-8", level=logging.INFO)
+else:
+    # Python version lower than 3.9
+    formatter = logging.Formatter(
+        fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
+    stream_handler.setFormatter(CustomFormatter())
+    logging.basicConfig(level=logging.INFO, handlers=[stream_handler])
+
 applogger.addHandler(stream_handler)
 
 
