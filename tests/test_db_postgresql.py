@@ -1,6 +1,8 @@
-import pytest
-import string
 import random
+import string
+
+import pytest
+
 from dont_scroll.core.db.postgresql import PostgreSQLClient
 
 # TODO : config file

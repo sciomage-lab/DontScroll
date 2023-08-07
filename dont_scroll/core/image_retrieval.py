@@ -62,6 +62,24 @@ class ImageRetrieval:
         image_features /= image_features.norm(dim=-1, keepdim=True)
         return image_features[0]
 
+    def text_to_vector(self, text: str):
+        """
+        Image to vector
+        :param text: text
+        """
+        text = clip.tokenize([text]).to(self.device)
+
+        with torch.no_grad():
+            text_features = self.model.encode_text(text)
+
+        # TODO: logger
+        if __debug__:
+            print(f"text_features : {text_features[0, :3]}")
+            print(f"text_features : {text_features.shape}")
+
+        text_features /= text_features.norm(dim=-1, keepdim=True)
+        return text_features[0]
+
     def vectorization(self, image: str, text: str):
         """Vectorization
         :param str image: image path

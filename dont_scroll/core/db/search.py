@@ -1,8 +1,8 @@
 import numpy as np
+
 from dont_scroll.core.db.postgresql import PostgreSQLClient
 from dont_scroll.core.image_retrieval import ImageRetrieval
 from dont_scroll.core.utils import cos_sim
-
 
 # TODO : Select DB
 DB_CLIENT = PostgreSQLClient
@@ -53,7 +53,6 @@ class SearchEngine:
 
 
 if __name__ == "__main__":
-
     image_path_1 = "./tests/images/cat1.png"
     image_path_2 = "./tests/images/cat2.jpg"
     image_path_3 = "./tests/images/hedgehog1.jpg"
@@ -68,6 +67,9 @@ if __name__ == "__main__":
     print(f"hedgehog1 vector shape : {image_vector_3.shape}")
     print(f"hedgehog2 vector shape : {image_vector_4.shape}")
 
+    text_vector = image_retrieval.text_to_vector("hedgehog")
+    print(f"text vector shape : {text_vector.shape}")
+
     # TODO : configfile
     search = SearchEngine(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, DB_TABLE)
 
@@ -76,8 +78,16 @@ if __name__ == "__main__":
     search.add_vector(image_vector_3.tolist(), image_path_3)
     search.add_vector(image_vector_4.tolist(), image_path_4)
 
-    # Search
+    # Search : Image
     ret = search.search_vector(image_vector_2.tolist(), 3)
+    print("Image search")
+    print(ret[0]["url"])
+    print(ret[1]["url"])
+    print(ret[2]["url"])
+
+    # Search : Text
+    print("Text search")
+    ret = search.search_vector(text_vector.tolist(), 3)
     print(ret[0]["url"])
     print(ret[1]["url"])
     print(ret[2]["url"])

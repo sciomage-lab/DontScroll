@@ -1,4 +1,5 @@
 import pytest
+
 from dont_scroll.core.image_retrieval import ImageRetrieval
 from dont_scroll.core.utils import cos_sim
 
