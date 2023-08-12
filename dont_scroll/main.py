@@ -1,9 +1,10 @@
+import argparse
 import os
 import sys
-import argparse
+
+import config
 import toml
 from flask import Flask
-import config
 from logger import applogger, set_all_logger_debug_mode
 
 

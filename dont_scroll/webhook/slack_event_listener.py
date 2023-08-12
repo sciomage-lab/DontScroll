@@ -1,11 +1,10 @@
-from flask import Flask, Blueprint
-from slackeventsapi import SlackEventAdapter
-from PIL import Image
-import requests
 import config
+import requests
 import utils
 from core import image_retrieval
-
+from flask import Blueprint, Flask
+from PIL import Image
+from slackeventsapi import SlackEventAdapter
 
 blueprint = Blueprint("slack_event_listener", __name__)
 slack_events_adapter = SlackEventAdapter(
