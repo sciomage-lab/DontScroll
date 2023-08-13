@@ -1,0 +1,10 @@
+{
+    "editor.fontFamily": "'Iosevka Term Curly Slab', Consolas, 'Courier New', monospace",
+    "terminal.integrated.fontFamily": "'Iosevka Term Curly Slab'",
+    "chat.editor.fontFamily": "'Iosevka Term Curly Slab'",
+    "notebook.output.fontFamily": "'Iosevka Term Curly Slab'",
+    "scm.inputFontFamily": "'Iosevka Term Curly Slab'",
+    "markdown.preview.fontFamily": "'Iosevka Term Curly Slab', -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif",    
+    "debug.console.fontFamily": "'Iosevka Term Curly Slab'",
+    "editor.fontLigatures": true    
+}

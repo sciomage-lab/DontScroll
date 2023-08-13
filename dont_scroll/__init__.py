@@ -1,13 +1,6 @@
 """
 dont scroll main
 """
-__version__ = "0.0.0.dev0"
-from dont_scroll import types, utils
-from dont_scroll.main import main
 
-__all__ = [
-    "__version__",
-    "main",
-    "utils",
-    "types",
-]
+
+__version__ = "0.0.0.0+dev"
