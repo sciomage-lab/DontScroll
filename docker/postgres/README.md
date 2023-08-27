@@ -1,16 +1,26 @@
 
-## Build cube-postgres image
+## Start docker
 
-Build postgres:13
+`./start.sh`
 ```bash
+# Build postgres:13
 docker build -t cube-postgres:13 .
+
+# Start docker
+docker-compose up -d
 ```
 
-## run docker-compose
-```bash
-docker-compose up -d
+## Stop docker
 
+`./stop.sh`
+```bash
+# Stop docker
 docker-compose down
+
+# Remove docker volume
+docker volume ls
+docker volume rm postgres_pgadmin_data
+docker volume rm postgres_postgresql_data
 ```
 
 ## Connect pgadmin
@@ -33,4 +43,3 @@ docker volume rm postgres_pgadmin_data
 docker volume rm postgres_postgresql_data
 docker volume prune
 ```
-
