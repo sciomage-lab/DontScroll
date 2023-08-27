@@ -16,16 +16,13 @@ _CONFIGS = {
 }
 
 
-def load(path: str = None):
+def load(path: str):
     r"""
     Load config from TOML
     :return: dict
     """
     globals().update(os.environ)
     config_file = None
-
-    if path is None:
-        path = os.path.join(os.path.expanduser("~"), ".config/dont_scroll/config.toml")
 
     # Load key and token for API on global scope variable
     if os.path.exists(path):

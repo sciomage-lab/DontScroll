@@ -120,7 +120,8 @@ class PostgreSQLClient:
 
 # 사용 예제:
 if __name__ == "__main__":
-    config.load()
+    path = os.path.join(os.path.expanduser("~"), ".config/dont_scroll/config.toml")
+    config.load(path)
 
     client = PostgreSQLClient(
         host=config.DB_HOST,

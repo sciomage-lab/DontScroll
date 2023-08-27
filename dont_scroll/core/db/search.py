@@ -1,9 +1,8 @@
+import os
+
 import numpy as np
 
 from dont_scroll import config
-
-config.load()
-
 from dont_scroll.core.db.postgresql import PostgreSQLClient
 from dont_scroll.core.image_retrieval import ImageRetrieval
 from dont_scroll.core.utils import cos_sim
@@ -48,6 +47,9 @@ class SearchEngine:
 
 
 if __name__ == "__main__":
+    path = os.path.join(os.path.expanduser("~"), ".config/dont_scroll/config.toml")
+    config.load(path)
+
     image_path_1 = "./tests/images/cat1.png"
     image_path_2 = "./tests/images/cat2.jpg"
     image_path_3 = "./tests/images/hedgehog1.jpg"

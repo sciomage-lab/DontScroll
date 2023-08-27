@@ -1,3 +1,4 @@
+import os
 import random
 import string
 
@@ -6,7 +7,8 @@ import pytest
 from dont_scroll import config
 from dont_scroll.core.db.postgresql import PostgreSQLClient
 
-config.load()
+path = os.path.join(os.path.expanduser("~"), ".config/dont_scroll/config.toml")
+config.load(path)
 
 
 # TODO : config
