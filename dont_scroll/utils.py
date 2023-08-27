@@ -1,7 +1,7 @@
+import config
+import numpy
 import requests
 from PIL import Image
-import numpy
-import config
 
 
 def read_image_from_url(url, token):
