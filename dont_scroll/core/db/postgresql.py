@@ -1,13 +1,7 @@
 import psycopg2
+from dont_scroll import config
 
-# TODO : config file
-DB_HOST = "127.0.0.1"
-DB_PORT = 5432
-DB_USER = "dont_scroll"
-DB_PASSWORD = "passwd"
-DB_NAME = "dont_scroll_db"
-DB_TABLE = "public.slack_message"
-
+config.load()
 
 class PostgreSQLClient:
     """
@@ -126,11 +120,12 @@ class PostgreSQLClient:
 # 사용 예제:
 if __name__ == "__main__":
     client = PostgreSQLClient(
-        host=DB_HOST,
-        port=DB_PORT,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        db_name=DB_NAME,
+        host=config.DB_HOST,
+        port=config.DB_PORT,
+        user=config.DB_USER,
+        password=config.DB_PASSWORD,
+        db_name=config.DB_NAME,
+        db_table=config.DB_TABLE,
     )
     if client.connection == None:
         # TODO : error logger

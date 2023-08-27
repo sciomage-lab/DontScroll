@@ -1,22 +1,31 @@
 import os
-
 import toml
-from logger import applogger
+
+from dont_scroll.logger import applogger
 
 
 _CONFIGS = {
     "SLACK_SIGNING_SECRET": "<YOUR SIGING KEY>", 
-    "BOT_USER_OAUTH_TOKEN": "<YOUR AUTH TOKEN>"
+    "BOT_USER_OAUTH_TOKEN": "<YOUR AUTH TOKEN>",
+    "DB_HOST": "127.0.0.1",
+    "DB_PORT": 5432,
+    "DB_USER": "dont_scroll",
+    "DB_PASSWORD": "passwd",
+    "DB_NAME": "dont_scroll_db",
+    "DB_TABLE": "public.slack_message",
 }
 
 
-def load(path: str):
+def load(path: str=None):
     r"""
     Load config from TOML
     :return: dict
     """
     globals().update(os.environ)
     config_file = None
+
+    if path is None:
+        path = os.path.join(os.path.expanduser("~"), ".config/dont_scroll/config.toml")
 
     # Load key and token for API on global scope variable
     if os.path.exists(path):

@@ -3,15 +3,10 @@ import string
 
 import pytest
 
+from dont_scroll import config
 from dont_scroll.core.db.postgresql import PostgreSQLClient
 
-# TODO : config file
-DB_HOST = "127.0.0.1"
-DB_PORT = 5432
-DB_USER = "dont_scroll"
-DB_PASSWORD = "passwd"
-DB_NAME = "dont_scroll_db"
-DB_TABLE = "public.slack_message"
+config.load()
 
 
 # TODO : config
@@ -71,12 +66,12 @@ def test_db_connect(host, port, user, password, db_name, db_table, is_pass):
 
 def get_db_client():
     db_client = PostgreSQLClient(
-        host=DB_HOST,
-        port=DB_PORT,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        db_name=DB_NAME,
-        db_table=DB_TABLE,
+        host=config.DB_HOST,
+        port=config.DB_PORT,
+        user=config.DB_USER,
+        password=config.DB_PASSWORD,
+        db_name=config.DB_NAME,
+        db_table=config.DB_TABLE,
     )
     return db_client
 

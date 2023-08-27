@@ -1,19 +1,14 @@
 import numpy as np
 
+from dont_scroll import config
+
+config.load()
+
 from dont_scroll.core.db.postgresql import PostgreSQLClient
 from dont_scroll.core.image_retrieval import ImageRetrieval
 from dont_scroll.core.utils import cos_sim
 
-# TODO : Select DB
 DB_CLIENT = PostgreSQLClient
-
-# TODO : config file
-DB_HOST = "127.0.0.1"
-DB_PORT = 5432
-DB_USER = "dont_scroll"
-DB_PASSWORD = "passwd"
-DB_NAME = "dont_scroll_db"
-DB_TABLE = "public.slack_message"
 
 
 class SearchEngine:
@@ -71,7 +66,12 @@ if __name__ == "__main__":
     print(f"text vector shape : {text_vector.shape}")
 
     # TODO : configfile
-    search = SearchEngine(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, DB_TABLE)
+    search = SearchEngine(config.DB_HOST, 
+                          config.DB_PORT, 
+                          config.DB_USER, 
+                          config.DB_PASSWORD, 
+                          config.DB_NAME, 
+                          config.DB_TABLE)
 
     # Add
     search.add_vector(image_vector_1.tolist(), image_path_1)
