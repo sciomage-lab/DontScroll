@@ -34,4 +34,3 @@ isort .
 black .
 pytest .
 ```
-
