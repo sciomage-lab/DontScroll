@@ -3,6 +3,7 @@ import os
 
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
+from slack_sdk import WebClient
 
 from dont_scroll import config
 
@@ -37,7 +38,20 @@ def read_config():
 toml = read_config()
 
 # Initializes your app with your bot token and socket mode handler
-app = App(token=toml.BOT_USER_OAUTH_TOKEN)
+# get client
+if __debug__:
+    import ssl
+
+    import certifi
+
+    ssl._create_default_https_context = ssl._create_unverified_context
+    ssl_context = ssl.create_default_context(cafile=certifi.where())
+
+    # TODO : logger
+    print(f"[INFO] XXX : Certificate Verification Disablement!!")
+    app = App(client=WebClient(token=toml.BOT_USER_OAUTH_TOKEN, ssl=ssl_context))
+else:
+    app = App(token=toml.BOT_USER_OAUTH_TOKEN)
 
 
 # https://api.slack.com/apps -> DontScroll
