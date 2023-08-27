@@ -1,7 +1,6 @@
 import psycopg2
+from dont_scroll.logger import applogger
 from dont_scroll import config
-
-config.load()
 
 class PostgreSQLClient:
     """
@@ -119,6 +118,9 @@ class PostgreSQLClient:
 
 # 사용 예제:
 if __name__ == "__main__":
+
+    config.load()
+
     client = PostgreSQLClient(
         host=config.DB_HOST,
         port=config.DB_PORT,
@@ -128,8 +130,7 @@ if __name__ == "__main__":
         db_table=config.DB_TABLE,
     )
     if client.connection == None:
-        # TODO : error logger
-        print("Fail")
+        applogger.critical("client connection fail")
         exit()
 
     # Insert

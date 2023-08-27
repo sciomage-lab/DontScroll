@@ -1,10 +1,10 @@
-# TODO : SSL error fix in macos
 import ssl
 
 import clip
 import torch
-from PIL import Image
 
+from dont_scroll.logger import applogger
+from PIL import Image
 from dont_scroll.core.utils import cos_sim
 
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -54,10 +54,9 @@ class ImageRetrieval:
         with torch.no_grad():
             image_features = self.model.encode_image(image)
 
-        # TODO: logger
         if __debug__:
-            print(f"image_features : {image_features[0, :3]}")
-            print(f"image_features : {image_features.shape}")
+            applogger.debug(f"image_features : {image_features[0, :3]}")
+            applogger.debug(f"image_features : {image_features.shape}")
 
         image_features /= image_features.norm(dim=-1, keepdim=True)
         return image_features[0]
@@ -72,10 +71,9 @@ class ImageRetrieval:
         with torch.no_grad():
             text_features = self.model.encode_text(text)
 
-        # TODO: logger
         if __debug__:
-            print(f"text_features : {text_features[0, :3]}")
-            print(f"text_features : {text_features.shape}")
+            applogger.debug(f"text_features : {text_features[0, :3]}")
+            applogger.debug(f"text_features : {text_features.shape}")
 
         text_features /= text_features.norm(dim=-1, keepdim=True)
         return text_features[0]

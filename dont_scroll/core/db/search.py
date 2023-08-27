@@ -7,6 +7,7 @@ config.load()
 from dont_scroll.core.db.postgresql import PostgreSQLClient
 from dont_scroll.core.image_retrieval import ImageRetrieval
 from dont_scroll.core.utils import cos_sim
+from dont_scroll.logger import applogger
 
 DB_CLIENT = PostgreSQLClient
 
@@ -23,8 +24,7 @@ class SearchEngine:
         )
 
         if self.db_client.connection == None:
-            # TODO: logger
-            print("DB connect fail")
+            applogger.critical("DB connect fail")
 
     def add_vector(self, vector: list, url: str):
         """Add vector
@@ -65,7 +65,6 @@ if __name__ == "__main__":
     text_vector = image_retrieval.text_to_vector("hedgehog")
     print(f"text vector shape : {text_vector.shape}")
 
-    # TODO : configfile
     search = SearchEngine(config.DB_HOST, 
                           config.DB_PORT, 
                           config.DB_USER, 

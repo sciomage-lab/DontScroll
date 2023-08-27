@@ -91,7 +91,6 @@ def test_text_search(data_1, data_2, data_3, data_4, query, gt):
 
     query_vector = image_retrieval.text_to_vector(query)
 
-    # TODO : configfile
     search = SearchEngine(config.DB_HOST, 
                           config.DB_PORT,
                           config.DB_USER, 
