@@ -7,7 +7,7 @@ import re
 import requests
 from slack_sdk import WebClient
 
-import config
+from dont_scroll import config
 
 
 def read_config():
@@ -148,8 +148,9 @@ def getLink(message_list):
 
 # get client
 if __debug__:
-    import certifi
     import ssl
+
+    import certifi
 
     ssl._create_default_https_context = ssl._create_unverified_context
     ssl_context = ssl.create_default_context(cafile=certifi.where())
@@ -170,6 +171,7 @@ response_data = get_response(client, start_datetime, end_datetime)
 
 # Parsing
 text_list, image_url_list = get_text_image(response_data)
+jG
 
 # Save messages
 saveLog("chat.log", text_list)
