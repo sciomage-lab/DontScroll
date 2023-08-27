@@ -21,3 +21,6 @@ slackeventsapi==3.0.1
 toml==0.10.2
 typing_extensions==4.7.1
 Werkzeug==2.3.6
+
+# slack
+slack_bolt
