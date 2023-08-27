@@ -9,6 +9,12 @@ _CONFIGS = {
 }
 
 
+_CONFIGS = {
+    "SLACK_SIGNING_SECRET": "<YOUR SIGING KEY>", 
+    "BOT_USER_OAUTH_TOKEN": "<YOUR AUTH TOKEN>"
+}
+
+
 def load(path: str):
     r"""
     Load config from TOML
