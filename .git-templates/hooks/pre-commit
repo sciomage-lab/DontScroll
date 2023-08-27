@@ -1,0 +1,37 @@
+#!/bin/sh
+INFO='\033[1;36m';
+FAIL='\033[1;31m';
+
+printc()
+{
+    echo $1 $2 $RESET;
+    RESET='\033[0m';
+}
+
+printc $INFO "Start commit hook"
+
+# 변경된 Python 파일만 선택
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=AM | grep ".py$");
+if [ "$STAGED_FILES" = "" ]; then
+    printc $INFO "No python files need to be linted"
+    exit 0;
+fi
+
+# isort와 black 실행
+printc $INFO "Formatting with isort and black..."
+printc $INFO $STAGED_FILES
+
+isort $INFO $STAGED_FILES
+printc $INFO "[STATUS: $?] Do isort"
+
+black $STAGED_FILES
+printc $INFO "[STATUS: $?] Do black"
+
+git add $STAGED_FILES
+printc $INFO "[STATUS: $?] Git add"
+
+if [ $? -ne "0" ]; then
+    printc $FAIL "Commit failed. Check isort or black output"
+fi
+
+exit $?
