@@ -1,4 +1,3 @@
-# TODO : SSL error fix in macos
 import ssl
 
 import clip
@@ -6,6 +5,7 @@ import torch
 from PIL import Image
 
 from dont_scroll.core.utils import cos_sim
+from dont_scroll.logger import applogger
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -54,9 +54,47 @@ class ImageRetrieval:
         with torch.no_grad():
             image_features = self.model.encode_image(image)
 
-        print(f"image_features : {image_features[0, :3]}")
-        print(f"image_features : {image_features.shape}")
+        if __debug__:
+            applogger.debug(f"image_features : {image_features[0, :3]}")
+            applogger.debug(f"image_features : {image_features.shape}")
+
+        image_features /= image_features.norm(dim=-1, keepdim=True)
         return image_features[0]
+
+    def text_to_vector(self, text: str):
+        """
+        Image to vector
+        :param text: text
+        """
+        text = clip.tokenize([text]).to(self.device)
+
+        with torch.no_grad():
+            text_features = self.model.encode_text(text)
+
+        if __debug__:
+            applogger.debug(f"text_features : {text_features[0, :3]}")
+            applogger.debug(f"text_features : {text_features.shape}")
+
+        text_features /= text_features.norm(dim=-1, keepdim=True)
+        return text_features[0]
+
+    def vectorization(self, image: str, text: str):
+        """Vectorization
+        :param str image: image path
+        :param str text: text
+        :return: vectorized vector
+        """
+
+        image = self.preprocess(Image.open(image_path)).unsqueeze(0).to(self.device)
+        text = clip.tokenize([text]).to(device)
+
+        with torch.no_grad():
+            image_features = self.model.encode_image(image)
+            text_features = self.model.encode_text(text)
+
+        logits_per_image, logits_per_text = self.model(image, text)
+
+        return logits_per_image, logits_per_text
 
 
 if __name__ == "__main__":

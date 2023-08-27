@@ -9,7 +9,7 @@
 Install venv
 ```bash
 python -m venv .venv
-.venv/bin/activate
+. .venv/bin/activate
 python -V
 ```
 

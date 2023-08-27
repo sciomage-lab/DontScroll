@@ -118,8 +118,9 @@ def getLink(message_list):
 
 # get client
 if __debug__:
-    import certifi
     import ssl
+
+    import certifi
 
     ssl._create_default_https_context = ssl._create_unverified_context
     ssl_context = ssl.create_default_context(cafile=certifi.where())
