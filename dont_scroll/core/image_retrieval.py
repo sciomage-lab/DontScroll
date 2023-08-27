@@ -2,10 +2,10 @@ import ssl
 
 import clip
 import torch
-
-from dont_scroll.logger import applogger
 from PIL import Image
+
 from dont_scroll.core.utils import cos_sim
+from dont_scroll.logger import applogger
 
 ssl._create_default_https_context = ssl._create_unverified_context
 

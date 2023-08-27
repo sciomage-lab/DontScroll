@@ -1,11 +1,11 @@
 import pytest
 
 from dont_scroll import config
-
 from dont_scroll.core.db.search import SearchEngine
 from dont_scroll.core.image_retrieval import ImageRetrieval
 
 config.load()
+
 
 @pytest.mark.skip_docker
 @pytest.mark.parametrize(
@@ -30,12 +30,14 @@ def test_image_search(data_1, data_2, data_3, query, gt):
     data_vector_3 = image_retrieval.image_to_vector(data_path_3)
     query_vector = image_retrieval.image_to_vector(query_path)
 
-    search = SearchEngine(config.DB_HOST, 
-                          config.DB_PORT, 
-                          config.DB_USER, 
-                          config.DB_PASSWORD, 
-                          config.DB_NAME, 
-                          config.DB_TABLE)
+    search = SearchEngine(
+        config.DB_HOST,
+        config.DB_PORT,
+        config.DB_USER,
+        config.DB_PASSWORD,
+        config.DB_NAME,
+        config.DB_TABLE,
+    )
 
     # Add
     search.add_vector(data_vector_1.tolist(), data_path_1)
@@ -91,12 +93,14 @@ def test_text_search(data_1, data_2, data_3, data_4, query, gt):
 
     query_vector = image_retrieval.text_to_vector(query)
 
-    search = SearchEngine(config.DB_HOST, 
-                          config.DB_PORT,
-                          config.DB_USER, 
-                          config.DB_PASSWORD, 
-                          config.DB_NAME, 
-                          config.DB_TABLE)
+    search = SearchEngine(
+        config.DB_HOST,
+        config.DB_PORT,
+        config.DB_USER,
+        config.DB_PASSWORD,
+        config.DB_NAME,
+        config.DB_TABLE,
+    )
 
     # Add
     search.add_vector(data_vector_1.tolist(), data_path_1)

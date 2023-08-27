@@ -1,11 +1,11 @@
 import os
+
 import toml
 
 from dont_scroll.logger import applogger
 
-
 _CONFIGS = {
-    "SLACK_SIGNING_SECRET": "<YOUR SIGING KEY>", 
+    "SLACK_SIGNING_SECRET": "<YOUR SIGING KEY>",
     "BOT_USER_OAUTH_TOKEN": "<YOUR AUTH TOKEN>",
     "DB_HOST": "127.0.0.1",
     "DB_PORT": 5432,
@@ -16,7 +16,7 @@ _CONFIGS = {
 }
 
 
-def load(path: str=None):
+def load(path: str = None):
     r"""
     Load config from TOML
     :return: dict
@@ -42,7 +42,7 @@ def load(path: str=None):
     # If file not exis on path, make config file on path
     else:
         os.makedirs(os.path.dirname(path), mode=0o700, exist_ok=True)
-        with open(path, 'w') as f:
+        with open(path, "w") as f:
             toml.dump(_CONFIGS, f)
 
         applogger.info(f"Config file genated on path {path}")
@@ -50,14 +50,14 @@ def load(path: str=None):
     # Check all needed key and token provided and can be found on global
     for CONFIG in _CONFIGS.keys():
         if CONFIG not in globals().keys() or globals()[CONFIG] == "":
-            msg =r"""
+            msg = r"""
             Please provide {config} key
             through environment variable or config file.
             Check file {path}.
             """
             msg = msg.format(config=CONFIG, path=path)
             applogger.critical(msg)
- 
+
             return False
 
     return True

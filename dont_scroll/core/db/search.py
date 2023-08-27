@@ -65,12 +65,14 @@ if __name__ == "__main__":
     text_vector = image_retrieval.text_to_vector("hedgehog")
     print(f"text vector shape : {text_vector.shape}")
 
-    search = SearchEngine(config.DB_HOST, 
-                          config.DB_PORT, 
-                          config.DB_USER, 
-                          config.DB_PASSWORD, 
-                          config.DB_NAME, 
-                          config.DB_TABLE)
+    search = SearchEngine(
+        config.DB_HOST,
+        config.DB_PORT,
+        config.DB_USER,
+        config.DB_PASSWORD,
+        config.DB_NAME,
+        config.DB_TABLE,
+    )
 
     # Add
     search.add_vector(image_vector_1.tolist(), image_path_1)

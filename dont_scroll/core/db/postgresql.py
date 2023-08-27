@@ -1,6 +1,8 @@
 import psycopg2
-from dont_scroll.logger import applogger
+
 from dont_scroll import config
+from dont_scroll.logger import applogger
+
 
 class PostgreSQLClient:
     """
@@ -118,7 +120,6 @@ class PostgreSQLClient:
 
 # 사용 예제:
 if __name__ == "__main__":
-
     config.load()
 
     client = PostgreSQLClient(
