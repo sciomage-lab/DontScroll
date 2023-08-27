@@ -3,11 +3,6 @@ import os
 import toml
 from logger import applogger
 
-_CONFIGS = {
-    "SLACK_SIGNING_SECRET": "<YOUR SIGING KEY>", 
-    "BOT_USER_OAUTH_TOKEN": "<YOUR AUTH TOKEN>"
-}
-
 
 _CONFIGS = {
     "SLACK_SIGNING_SECRET": "<YOUR SIGING KEY>", 
