@@ -1,3 +1,7 @@
+# Configs
+toml
+psycopg2
+
 # Torch
 torch
 torchvision
