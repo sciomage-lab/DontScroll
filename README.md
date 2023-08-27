@@ -13,6 +13,15 @@ pip install -r requirements.txt
 pip install -r requirements-dev.txt
 ```
 
+## Before commit 
+Use `isort`` to reorder package import and reformat using autu linter `black``.
+Use `pylint` for static code analysis
+```sh
+isort <Project-Root-Path>
+black <Project-Root-Path>
+pylint
+```
+
 # How to start
 ```sh
 python main.py

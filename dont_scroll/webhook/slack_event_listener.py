@@ -1,11 +1,11 @@
-from flask import Flask, Blueprint
-from slackeventsapi import SlackEventAdapter
-from PIL import Image
 import requests
-import config
 import utils
 from core import image_retrieval
+from flask import Blueprint, Flask
+from PIL import Image
+from slackeventsapi import SlackEventAdapter
 
+import dont_scroll.config
 
 blueprint = Blueprint("slack_event_listener", __name__)
 slack_events_adapter = SlackEventAdapter(
@@ -35,3 +35,10 @@ def handle_message(event_data):
                     download_url, token=config.BOT_USER_OAUTH_TOKEN
                 )
                 print(fname, mimetype, download_url, img_npy.shape, width, height)
+
+
+if __name__ == "__main__":
+    from .. import config
+
+    config.load("")
+    print(config.SLACK_SIGNING_SECRET)

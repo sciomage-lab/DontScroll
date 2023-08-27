@@ -45,32 +45,23 @@ channel_id = toml.CHANNEL_ID
 # 1, url에서 앱을 만들고
 # 2, 좌측 OAuth & Permission에 들어가서
 # 3, Scopes 추가, "app_mentions:read, channels:history"는 기본으로 추가하고 필요하면 더 추가
-<<<<<<< Updated upstream
-auth_token = ""
-=======
 
 if auth_token == None or auth_token == "":
     # TODO : Error
     print(f"Error auth_token is invalid")
     exit()
->>>>>>> Stashed changes
 
 # channel id - https://api.slack.com/methods/conversations.list/test
 # 1, url들아가면 tester페이지가 나옴
 # 2, 위의 auth_token을 집어 넣고 "Test method" 녹색 버튼 누르면
 # 3, json으로 간단한 정보가 뜨는데 거기서 channel->id를 보면 채팅방에 따른 id가 뜬다.
 # 4, 그중에서 적절한것을 하나 골라서 channel_id로 사용하면 됨
-<<<<<<< Updated upstream
-# channel_id = "C05KGFK5D1S" # OSS
-channel_id = "C05L7M02A80"  # LogTest
-=======
 
 if channel_id == None or channel_id == "":
     # TODO : Error
     print(f"Error auth_token is invalid")
     exit()
 
->>>>>>> Stashed changes
 
 # 이제 채널에 봇을 초대하고, 아래 코드를 실행하면 txt파일이 출력됨
 
@@ -156,14 +147,9 @@ def getLink(message_list):
 
 
 # get client
-<<<<<<< Updated upstream
-client = WebClient(token=auth_token)
-client.reactions_add
-=======
 if __debug__:
-    import ssl
-
     import certifi
+    import ssl
 
     ssl._create_default_https_context = ssl._create_unverified_context
     ssl_context = ssl.create_default_context(cafile=certifi.where())
@@ -173,7 +159,6 @@ if __debug__:
     client = WebClient(token=auth_token, ssl=ssl_context)
 else:
     client = WebClient(token=auth_token)
->>>>>>> Stashed changes
 
 # set tiemstamp
 start_datetime, end_datetime = set_timescope(2023, 7, 1, 0, 0, 0, 60, 0, 0, 0)
@@ -194,4 +179,3 @@ saveImage(image_url_list, auth_token)
 
 # get URL Link
 message_link = getLink(text_list)
-# print(message_link)
