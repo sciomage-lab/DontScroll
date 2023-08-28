@@ -12,7 +12,7 @@ _CONFIGS = {
     "DB_HOST": "127.0.0.1",
     "DB_PORT": 5432,
     "DB_USER": "dont_scroll",
-    "DB_PASSWORD": "passwd",
+    "DB_PASSWORD": "secret",
     "DB_NAME": "dont_scroll_db",
     "DB_TABLE": "public.slack_message",
 }

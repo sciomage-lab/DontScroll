@@ -6,6 +6,7 @@ import pytest
 
 from dont_scroll import config
 from dont_scroll.core.db.postgresql import PostgreSQLClient
+from dont_scroll.utils import generate_random_hash
 
 path = os.path.join(os.path.expanduser("~"), ".config/dont_scroll/config.toml")
 config.load(path)
@@ -20,7 +21,7 @@ config.load(path)
             "127.0.0.1",
             5432,
             "dont_scroll",
-            "passwd",
+            "secret",
             "dont_scroll_db",
             "public.slack_message",
             True,
@@ -29,7 +30,7 @@ config.load(path)
             "127.0.0.1",
             5433,
             "dont_scroll",
-            "passwd",
+            "secret",
             "dont_scroll_db",
             "public.slack_message",
             False,
@@ -38,7 +39,7 @@ config.load(path)
             "127.0.0.1",
             5432,
             "dont_scroll_2",
-            "passwd_2",
+            "secret_2",
             "dont_scroll_db",
             "public.slack_message",
             False,
@@ -94,10 +95,17 @@ def generate_random_string(length=10):
 def test_db_insert_select_delete(db):
     # randon data
     random_data = generate_random_string()
+
+    test_id = f"test-{generate_random_hash()}"
+
     data = {
         "vector": "CUBE(ARRAY[2, 3, 4])",
         "file_url": f"{random_data}",
+        "client_msg_id": test_id,
+        "text": test_id,
     }
+
+    print(f"data : {data}")
 
     # insert
     db.insert_data(data)
@@ -118,8 +126,9 @@ if __name__ == "__main__":
         "127.0.0.1",
         5432,
         "dont_scroll",
-        "passwd",
+        "secret",
         "dont_scroll_db",
+        "public.slack_message",
         True,
     )
 

@@ -2,6 +2,7 @@ import psycopg2
 
 from dont_scroll import config
 from dont_scroll.logger import applogger
+from dont_scroll.utils import generate_random_hash
 
 
 class PostgreSQLClient:
@@ -137,9 +138,12 @@ if __name__ == "__main__":
         exit()
 
     # Insert
+    test_id = f"test-{generate_random_hash()}"
     data = {
         "vector": "CUBE(ARRAY[2, 3, 4])",
         "file_url": "http://aaa",
+        "client_msg_id": test_id,
+        "text": None,
     }
     client.insert_data(data)
 
