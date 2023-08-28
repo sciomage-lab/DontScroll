@@ -1,6 +1,6 @@
-import config
 import numpy
 import requests
+import datetime
 from PIL import Image
 
 
@@ -13,6 +13,28 @@ def read_image_from_url(url, token):
         return numpy.asarray(img)
     else:
         return None
+
+
+def set_timescope(
+    start_year,
+    start_month,
+    start_day,
+    start_hour,
+    start_minute,
+    start_second,
+    add_day,
+    add_hour,
+    add_minute,
+    add_second,
+):
+    start_date = datetime.datetime(
+        start_year, start_month, start_day, start_hour, start_minute, start_second
+    )
+    datetime_scope = datetime.timedelta(
+        days=add_day, hours=add_hour, minutes=add_minute, seconds=add_second
+    )
+
+    return int(start_date.timestamp()), int((start_date + datetime_scope).timestamp())
 
 
 if __name__ == "__main__":

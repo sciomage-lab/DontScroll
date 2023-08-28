@@ -1,5 +1,4 @@
 import argparse
-import datetime
 import json
 import os
 import re
@@ -8,6 +7,78 @@ import requests
 from slack_sdk import WebClient
 
 from dont_scroll import config
+from dont_scroll.utils import set_timescope
+
+from dont_scroll.logger import applogger
+
+
+class SlackMessageFetcher:
+    def __init__(self, auth_token: str, channel_id: str):
+        # auth
+        # auth token - https://api.slack.com/apps
+        # 1, url에서 앱을 만들고
+        # 2, 좌측 OAuth & Permission에 들어가서
+        # 3, Scopes 추가, "app_mentions:read, channels:history"는 기본으로 추가하고 필요하면 더 추가
+        if auth_token == None or auth_token == "":
+            applogger.critical(f"Error auth_token is invalid")
+            exit()
+
+        # channel id - https://api.slack.com/methods/conversations.list/test
+        # 1, url들아가면 tester페이지가 나옴
+        # 2, 위의 auth_token을 집어 넣고 "Test method" 녹색 버튼 누르면
+        # 3, json으로 간단한 정보가 뜨는데 거기서 channel->id를 보면 채팅방에 따른 id가 뜬다.
+        # 4, 그중에서 적절한것을 하나 골라서 channel_id로 사용하면 됨
+        if channel_id == None or channel_id == "":
+            applogger.critical(f"Error auth_token is invalid")
+            exit()
+
+        self.auth_token = auth_token
+        self.channel_id = channel_id
+
+        # get client
+        if __debug__:
+            import ssl
+            import certifi
+
+            ssl._create_default_https_context = ssl._create_unverified_context
+            ssl_context = ssl.create_default_context(cafile=certifi.where())
+
+            # TODO : logger
+            applogger.debug(f"[INFO] XXX : Certificate Verification Disablement!!")
+            self.client = WebClient(token=auth_token, ssl=ssl_context)
+        else:
+            self.client = WebClient(token=auth_token)
+
+    def get_response(self):
+        return self.client.conversations_history(channel=self.channel_id)
+
+    def get_response(self, oldest_timestamp, latest_timestamp):
+        return self.client.conversations_history(
+            channel=self.channel_id, oldest=oldest_timestamp, latest=latest_timestamp
+        )
+
+    def get_text_image(self, oldest_timestamp, latest_timestamp):
+        response = self.get_response(oldest_timestamp, latest_timestamp)
+
+        if response["ok"]:
+            messages = response["messages"]
+            text_list = []
+            image_list = []
+
+            for message in messages:
+                # print(f"message : {message}")
+                # message
+                if "text" in message and "files" in message:
+                    text = message["text"]
+                    files = message["files"]
+
+                    # images
+                    for file in files:
+                        file_url = file["url_private"]
+
+                        print(f"{text} : {file_url[:100]}")
+
+        return text_list, image_list
 
 
 def read_config():
@@ -36,90 +107,6 @@ def read_config():
     return config
 
 
-toml = read_config()
-auth_token = toml.BOT_USER_OAUTH_TOKEN
-channel_id = toml.CHANNEL_ID
-
-# auth
-# auth token - https://api.slack.com/apps
-# 1, url에서 앱을 만들고
-# 2, 좌측 OAuth & Permission에 들어가서
-# 3, Scopes 추가, "app_mentions:read, channels:history"는 기본으로 추가하고 필요하면 더 추가
-
-if auth_token == None or auth_token == "":
-    # TODO : Error
-    print(f"Error auth_token is invalid")
-    exit()
-
-# channel id - https://api.slack.com/methods/conversations.list/test
-# 1, url들아가면 tester페이지가 나옴
-# 2, 위의 auth_token을 집어 넣고 "Test method" 녹색 버튼 누르면
-# 3, json으로 간단한 정보가 뜨는데 거기서 channel->id를 보면 채팅방에 따른 id가 뜬다.
-# 4, 그중에서 적절한것을 하나 골라서 channel_id로 사용하면 됨
-
-if channel_id == None or channel_id == "":
-    # TODO : Error
-    print(f"Error auth_token is invalid")
-    exit()
-
-
-# 이제 채널에 봇을 초대하고, 아래 코드를 실행하면 txt파일이 출력됨
-
-
-def set_timescope(
-    start_year,
-    start_month,
-    start_day,
-    start_hour,
-    start_minute,
-    start_second,
-    add_day,
-    add_hour,
-    add_minute,
-    add_second,
-):
-    start_date = datetime.datetime(
-        start_year, start_month, start_day, start_hour, start_minute, start_second
-    )
-    datetime_scope = datetime.timedelta(
-        days=add_day, hours=add_hour, minutes=add_minute, seconds=add_second
-    )
-
-    return int(start_date.timestamp()), int((start_date + datetime_scope).timestamp())
-
-
-def get_response(client):
-    return client.conversations_history(channel=channel_id)
-
-
-def get_response(client, oldest_timestamp, latest_timestamp):
-    return client.conversations_history(
-        channel=channel_id, oldest=oldest_timestamp, latest=latest_timestamp
-    )
-
-
-def get_text_image(response):
-    if response["ok"]:
-        messages = response["messages"]
-        text_list = []
-        image_list = []
-
-        for message in messages:
-            # message
-            if "text" in message:
-                text_list.append(message["text"])
-
-            # files
-            if "files" in message:
-                files = message["files"]
-
-                # images
-                for file in files:
-                    image_list.append(file["url_private"])
-
-    return text_list, image_list
-
-
 def saveLog(filename, text_list):
     with open(filename, "w", encoding="utf-8") as file:
         file.write("\n".join(text_list))
@@ -146,37 +133,32 @@ def getLink(message_list):
     return urls
 
 
-# get client
-if __debug__:
-    import ssl
+# module test
+if __name__ == "__main__":
+    toml = read_config()
+    auth_token = toml.BOT_USER_OAUTH_TOKEN
+    channel_id = toml.CHANNEL_ID
 
-    import certifi
+    slack_message_fetcher = SlackMessageFetcher(auth_token, channel_id)
 
-    ssl._create_default_https_context = ssl._create_unverified_context
-    ssl_context = ssl.create_default_context(cafile=certifi.where())
+    # set tiemstamp
+    start_datetime, end_datetime = set_timescope(2023, 7, 1, 0, 0, 0, 60, 0, 0, 0)
 
-    # TODO : logger
-    print(f"[INFO] XXX : Certificate Verification Disablement!!")
-    client = WebClient(token=auth_token, ssl=ssl_context)
-else:
-    client = WebClient(token=auth_token)
+    # Load message
+    response_data = slack_message_fetcher.get_response(start_datetime, end_datetime)
 
-# set tiemstamp
-start_datetime, end_datetime = set_timescope(2023, 7, 1, 0, 0, 0, 60, 0, 0, 0)
+    # print(json.dumps(response_data["messages"], indent=4, ensure_ascii=False))
 
-# Load message
-response_data = get_response(client, start_datetime, end_datetime)
+    # Parsing
+    text_list, image_url_list = slack_message_fetcher.get_text_image(
+        start_datetime, end_datetime
+    )
 
-# print(json.dumps(response_data['messages'], indent=4, ensure_ascii=False))
+    # Save messages
+    # saveLog("chat.log", text_list)
 
-# Parsing
-text_list, image_url_list = get_text_image(response_data)
+    # Save attached images
+    # saveImage(image_url_list, auth_token)
 
-# Save messages
-saveLog("chat.log", text_list)
-
-# Save attached images
-saveImage(image_url_list, auth_token)
-
-# get URL Link
-message_link = getLink(text_list)
+    # get URL Link
+    # message_link = getLink(text_list)
