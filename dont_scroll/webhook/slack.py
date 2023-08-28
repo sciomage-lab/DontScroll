@@ -1,3 +1,4 @@
+import argparse
 import datetime
 import json
 import os
@@ -6,14 +7,45 @@ import re
 import requests
 from slack_sdk import WebClient
 
+from dont_scroll import config
+
+
+def read_config():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--config",
+        default=os.path.join(
+            os.path.expanduser("~"), ".config/dont_scroll/config.toml"
+        ),
+        type=str,
+    )
+
+    args = parser.parse_args()
+    config.load(args.config)
+
+    # BOT_USER_OAUTH_TOKEN
+    # https://api.slack.com/apps -> DontScroll
+    # -> Feature -> OAuth & Permissions
+    # -> OAuth Tokens for Your Workspace -> Bot User Oath Token
+
+    # SLACK_APP_TOKEN
+    # https://api.slack.com/apps -> DontScroll
+    # -> Settings -> Basic Information -> App-Level Tokens
+    # -> "TalkTest" -> Token (NEED connetions:write)
+
+    return config
+
+
+toml = read_config()
+auth_token = toml.BOT_USER_OAUTH_TOKEN
+channel_id = toml.CHANNEL_ID
+
 # auth
 # auth token - https://api.slack.com/apps
 # 1, url에서 앱을 만들고
 # 2, 좌측 OAuth & Permission에 들어가서
 # 3, Scopes 추가, "app_mentions:read, channels:history"는 기본으로 추가하고 필요하면 더 추가
 
-# TODO : Load config
-auth_token = os.environ.get("auth_token")
 if auth_token == None or auth_token == "":
     # TODO : Error
     print(f"Error auth_token is invalid")
@@ -25,8 +57,6 @@ if auth_token == None or auth_token == "":
 # 3, json으로 간단한 정보가 뜨는데 거기서 channel->id를 보면 채팅방에 따른 id가 뜬다.
 # 4, 그중에서 적절한것을 하나 골라서 channel_id로 사용하면 됨
 
-# TODO : Load config
-channel_id = os.environ.get("channel_id")
 if channel_id == None or channel_id == "":
     # TODO : Error
     print(f"Error auth_token is invalid")

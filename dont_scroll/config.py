@@ -7,6 +7,8 @@ from dont_scroll.logger import applogger
 _CONFIGS = {
     "SLACK_SIGNING_SECRET": "<YOUR SIGING KEY>",
     "BOT_USER_OAUTH_TOKEN": "<YOUR AUTH TOKEN>",
+    "SLACK_APP_TOKEN": "<YOUR BOT TOKEN>",
+    "CHANNEL_ID": "<YOUR BOT TOKEN>",
     "DB_HOST": "127.0.0.1",
     "DB_PORT": 5432,
     "DB_USER": "dont_scroll",
