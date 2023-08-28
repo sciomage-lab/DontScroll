@@ -36,6 +36,19 @@ class SearchEngine:
         }
         self.db_client.insert_data(data)
 
+    def add_vector(self, vector: list, url: str, client_msg_id: str, text: str):
+        """Add vector
+        :param list vector: input vector
+        :param str url: input url
+        """
+        data = {
+            "vector": f"CUBE(ARRAY[{vector}])",
+            "file_url": url,
+            "client_msg_id": client_msg_id,
+            "text": text,
+        }
+        self.db_client.insert_data(data)
+
     def search_vector(self, vector: list, n: int):
         """
         Search vector

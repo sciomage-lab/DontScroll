@@ -2,13 +2,13 @@ import argparse
 import json
 import os
 import re
-
 import requests
+
 from slack_sdk import WebClient
 
+from dont_scroll.core.db.search import SearchEngine
 from dont_scroll import config
 from dont_scroll.utils import set_timescope
-
 from dont_scroll.logger import applogger
 
 
@@ -60,15 +60,18 @@ class SlackMessageFetcher:
     def get_text_image(self, oldest_timestamp, latest_timestamp):
         response = self.get_response(oldest_timestamp, latest_timestamp)
 
+        ret = []
         if response["ok"]:
             messages = response["messages"]
-            text_list = []
-            image_list = []
 
             for message in messages:
                 # print(f"message : {message}")
                 # message
-                if "text" in message and "files" in message:
+                if (
+                    "text" in message
+                    and "files" in message
+                    and "client_msg_id" in message
+                ):
                     text = message["text"] or "(empty)"
                     files = message["files"]
                     client_msg_id = message["client_msg_id"]
@@ -78,8 +81,14 @@ class SlackMessageFetcher:
                         file_url = file["url_private"]
 
                         print(f"[{client_msg_id}] {text} : {file_url[:100]}")
-
-        return text_list, image_list
+                        ret.append(
+                            {
+                                "client_msg_id": client_msg_id,
+                                "text": text,
+                                "file_url": file_url,
+                            }
+                        )
+        return ret
 
 
 def read_config():
@@ -148,12 +157,21 @@ if __name__ == "__main__":
     # Load message
     response_data = slack_message_fetcher.get_response(start_datetime, end_datetime)
 
-    # print(json.dumps(response_data["messages"], indent=4, ensure_ascii=False))
+    search = SearchEngine(
+        config.DB_HOST,
+        config.DB_PORT,
+        config.DB_USER,
+        config.DB_PASSWORD,
+        config.DB_NAME,
+        config.DB_TABLE,
+    )
 
     # Parsing
-    text_list, image_url_list = slack_message_fetcher.get_text_image(
+    message_list = slack_message_fetcher.get_text_image(
         start_datetime, end_datetime
     )
+
+    print(json.dumps(message_list, indent=4, ensure_ascii=False))
 
     # Save messages
     # saveLog("chat.log", text_list)
