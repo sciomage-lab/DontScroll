@@ -69,14 +69,15 @@ class SlackMessageFetcher:
                 # print(f"message : {message}")
                 # message
                 if "text" in message and "files" in message:
-                    text = message["text"]
+                    text = message["text"] or "(empty)"
                     files = message["files"]
+                    client_msg_id = message["client_msg_id"]
 
                     # images
                     for file in files:
                         file_url = file["url_private"]
 
-                        print(f"{text} : {file_url[:100]}")
+                        print(f"[{client_msg_id}] {text} : {file_url[:100]}")
 
         return text_list, image_list
 
