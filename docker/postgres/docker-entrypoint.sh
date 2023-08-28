@@ -23,7 +23,7 @@ psql -v ON_ERROR_STOP=1 --username "postgres" <<-EOSQL
     \$\$;
  
     -- 데이터베이스 생성
-    CREATE DATABASE dont_scroll_db;
+    CREATE DATABASE dont_scroll_db WITH TEMPLATE template0 ENCODING 'UTF8';
 
     -- 사용자에게 권한 부여
     GRANT ALL PRIVILEGES ON DATABASE dont_scroll_db TO $POSTGRES_USER;

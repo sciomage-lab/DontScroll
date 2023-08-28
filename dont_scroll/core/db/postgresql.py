@@ -36,6 +36,7 @@ class PostgreSQLClient:
                 password=password,
                 dbname=db_name,
                 connect_timeout=3,
+                client_encoding='utf8'
             )
             self.cursor = self.connection.cursor()
 
@@ -65,17 +66,17 @@ class PostgreSQLClient:
 
         # 특별한 처리가 필요한 'vector' 값에 대한 처리
         values_placeholders = []
+        params = []
         for key, value in data_dict.items():
             if key == "vector":
                 values_placeholders.append(value)
             else:
                 values_placeholders.append("%s")
+                params.append(value)
+
         values = ", ".join(values_placeholders)
 
-        query = f"INSERT INTO {self.db_table} ({columns}) VALUES ({values});"
-
-        # 'vector' 값을 제외한 나머지 값들
-        params = [v for k, v in data_dict.items() if k != "vector"]
+        query = f"INSERT INTO {self.db_table} ({columns}) VALUES ({values}) ON CONFLICT DO NOTHING;"
 
         self.execute_query(query, params)
         self.connection.commit()

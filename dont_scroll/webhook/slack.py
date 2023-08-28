@@ -4,12 +4,21 @@ import os
 import re
 import requests
 
+
+from io import BytesIO
+from PIL import Image, UnidentifiedImageError
+
 from slack_sdk import WebClient
 
 from dont_scroll.core.db.search import SearchEngine
 from dont_scroll import config
 from dont_scroll.utils import set_timescope
 from dont_scroll.logger import applogger
+from dont_scroll.core.image_retrieval import ImageRetrieval
+
+# For test
+from rich.progress import Progress, SpinnerColumn, TimeElapsedColumn , BarColumn, TimeRemainingColumn,TaskProgressColumn
+import time
 
 
 class SlackMessageFetcher:
@@ -79,17 +88,37 @@ class SlackMessageFetcher:
                     # images
                     for file in files:
                         file_url = file["url_private"]
+                        file_id = file["id"]
 
                         print(f"[{client_msg_id}] {text} : {file_url[:100]}")
                         ret.append(
                             {
-                                "client_msg_id": client_msg_id,
+                                "client_msg_id": f"{client_msg_id}-{file_id}",
                                 "text": text,
                                 "file_url": file_url,
                             }
                         )
         return ret
+    
+    def get_image(self, image_url):
+        response = requests.get(
+            image_url, headers={"Authorization": f"Bearer {self.auth_token}"}
+        )
 
+        if response.status_code == 200:  # HTTP 상태 코드가 200 OK인 경우
+            try:
+                img_data = BytesIO(response.content)
+                img_data.seek(0)
+                img = Image.open(img_data)
+            except UnidentifiedImageError:
+                # TODO : error
+                print("Cannot identify image file")
+                return None
+        else:
+            print("Error, image get error")
+            pass
+
+        return img 
 
 def read_config():
     parser = argparse.ArgumentParser()
@@ -132,7 +161,6 @@ def saveImage(image_url_list, auth_token):
         with open(save_filename, "wb") as image_file:
             image_file.write(image_response.content)
 
-
 def getLink(message_list):
     urls = []
     url_pattern = re.compile(r"https?://\S+")
@@ -156,7 +184,12 @@ if __name__ == "__main__":
 
     # Load message
     response_data = slack_message_fetcher.get_response(start_datetime, end_datetime)
+    # print(json.dumps(response_data['messages'], indent=4, ensure_ascii=False))
 
+    # ImageRetrieval
+    image_retrieval = ImageRetrieval()
+
+    # SearchEngine
     search = SearchEngine(
         config.DB_HOST,
         config.DB_PORT,
@@ -173,6 +206,26 @@ if __name__ == "__main__":
 
     print(json.dumps(message_list, indent=4, ensure_ascii=False))
 
+    # Progress
+    with Progress() as progress:
+        task = progress.add_task("insert DB", total=len(message_list))
+
+        for message in message_list:
+            client_msg_id = message["client_msg_id"]
+            text = message["text"]
+            file_url = message["file_url"]
+            image_buf = slack_message_fetcher.get_image(file_url)
+            if image_buf is None:
+                continue
+
+            # To vector
+            vector = image_retrieval.image_to_vector(image_buf).tolist()
+
+            # Insert DB
+            search.add_vector(vector, file_url, client_msg_id, text)
+
+            progress.advance(task)
+
     # Save messages
     # saveLog("chat.log", text_list)
 
@@ -181,3 +234,14 @@ if __name__ == "__main__":
 
     # get URL Link
     # message_link = getLink(text_list)
+
+    # TEST
+    query = "hedgehog"
+    query_vector = image_retrieval.text_to_vector(query)
+
+    ret = search.search_vector(query_vector.tolist(), 3)
+    print(ret[0]["file_url"])
+    print(ret[1]["file_url"])
+    print(ret[2]["file_url"])
+
+
