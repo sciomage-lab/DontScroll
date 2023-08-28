@@ -171,7 +171,6 @@ response_data = get_response(client, start_datetime, end_datetime)
 
 # Parsing
 text_list, image_url_list = get_text_image(response_data)
-jG
 
 # Save messages
 saveLog("chat.log", text_list)
