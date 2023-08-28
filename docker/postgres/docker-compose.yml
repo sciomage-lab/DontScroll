@@ -5,7 +5,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: dont_scroll
-      POSTGRES_PASSWORD: passwd
+      POSTGRES_PASSWORD: secret
       POSTGRES_DB: mydatabase
     volumes:
       - postgresql_data:/var/lib/postgresql/data

@@ -5,6 +5,7 @@ import pytest
 from dont_scroll import config
 from dont_scroll.core.db.search import SearchEngine
 from dont_scroll.core.image_retrieval import ImageRetrieval
+from dont_scroll.utils import generate_random_hash
 
 path = os.path.join(os.path.expanduser("~"), ".config/dont_scroll/config.toml")
 config.load(path)
@@ -43,9 +44,15 @@ def test_image_search(data_1, data_2, data_3, query, gt):
     )
 
     # Add
-    search.add_vector(data_vector_1.tolist(), data_path_1)
-    search.add_vector(data_vector_2.tolist(), data_path_2)
-    search.add_vector(data_vector_3.tolist(), data_path_3)
+    search.add_vector(
+        data_vector_1.tolist(), data_path_1, f"test-{generate_random_hash()}"
+    )
+    search.add_vector(
+        data_vector_2.tolist(), data_path_2, f"test-{generate_random_hash()}"
+    )
+    search.add_vector(
+        data_vector_3.tolist(), data_path_3, f"test-{generate_random_hash()}"
+    )
 
     # Search
     ret = search.search_vector(query_vector.tolist(), 3)
@@ -106,10 +113,18 @@ def test_text_search(data_1, data_2, data_3, data_4, query, gt):
     )
 
     # Add
-    search.add_vector(data_vector_1.tolist(), data_path_1)
-    search.add_vector(data_vector_2.tolist(), data_path_2)
-    search.add_vector(data_vector_3.tolist(), data_path_3)
-    search.add_vector(data_vector_4.tolist(), data_path_4)
+    search.add_vector(
+        data_vector_1.tolist(), data_path_1, f"test-{generate_random_hash()}"
+    )
+    search.add_vector(
+        data_vector_2.tolist(), data_path_2, f"test-{generate_random_hash()}"
+    )
+    search.add_vector(
+        data_vector_3.tolist(), data_path_3, f"test-{generate_random_hash()}"
+    )
+    search.add_vector(
+        data_vector_4.tolist(), data_path_4, f"test-{generate_random_hash()}"
+    )
 
     # Search
     ret = search.search_vector(query_vector.tolist(), 3)

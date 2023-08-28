@@ -1,6 +1,9 @@
+import datetime
+import random
+import string
+
 import numpy
 import requests
-import datetime
 from PIL import Image
 
 
@@ -35,6 +38,12 @@ def set_timescope(
     )
 
     return int(start_date.timestamp()), int((start_date + datetime_scope).timestamp())
+
+
+def generate_random_hash(length=16):
+    letters_and_digits = string.ascii_letters + string.digits
+    random_hash = "".join(random.choice(letters_and_digits) for i in range(length))
+    return random_hash
 
 
 if __name__ == "__main__":

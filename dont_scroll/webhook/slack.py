@@ -2,23 +2,22 @@ import argparse
 import json
 import os
 import re
-import requests
-
-
+import time
 from io import BytesIO
-from PIL import Image, UnidentifiedImageError
 
+import requests
+from PIL import Image, UnidentifiedImageError
+# For test
+from rich.progress import (BarColumn, Progress, SpinnerColumn,
+                           TaskProgressColumn, TimeElapsedColumn,
+                           TimeRemainingColumn)
 from slack_sdk import WebClient
 
-from dont_scroll.core.db.search import SearchEngine
 from dont_scroll import config
-from dont_scroll.utils import set_timescope
-from dont_scroll.logger import applogger
+from dont_scroll.core.db.search import SearchEngine
 from dont_scroll.core.image_retrieval import ImageRetrieval
-
-# For test
-from rich.progress import Progress, SpinnerColumn, TimeElapsedColumn , BarColumn, TimeRemainingColumn,TaskProgressColumn
-import time
+from dont_scroll.logger import applogger
+from dont_scroll.utils import set_timescope
 
 
 class SlackMessageFetcher:
@@ -47,6 +46,7 @@ class SlackMessageFetcher:
         # get client
         if __debug__:
             import ssl
+
             import certifi
 
             ssl._create_default_https_context = ssl._create_unverified_context
@@ -99,7 +99,7 @@ class SlackMessageFetcher:
                             }
                         )
         return ret
-    
+
     def get_image(self, image_url):
         response = requests.get(
             image_url, headers={"Authorization": f"Bearer {self.auth_token}"}
@@ -118,7 +118,8 @@ class SlackMessageFetcher:
             print("Error, image get error")
             pass
 
-        return img 
+        return img
+
 
 def read_config():
     parser = argparse.ArgumentParser()
@@ -161,6 +162,7 @@ def saveImage(image_url_list, auth_token):
         with open(save_filename, "wb") as image_file:
             image_file.write(image_response.content)
 
+
 def getLink(message_list):
     urls = []
     url_pattern = re.compile(r"https?://\S+")
@@ -200,9 +202,7 @@ if __name__ == "__main__":
     )
 
     # Parsing
-    message_list = slack_message_fetcher.get_text_image(
-        start_datetime, end_datetime
-    )
+    message_list = slack_message_fetcher.get_text_image(start_datetime, end_datetime)
 
     print(json.dumps(message_list, indent=4, ensure_ascii=False))
 
@@ -243,5 +243,3 @@ if __name__ == "__main__":
     print(ret[0]["file_url"])
     print(ret[1]["file_url"])
     print(ret[2]["file_url"])
-
-

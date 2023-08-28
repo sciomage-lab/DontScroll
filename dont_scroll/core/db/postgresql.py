@@ -36,7 +36,7 @@ class PostgreSQLClient:
                 password=password,
                 dbname=db_name,
                 connect_timeout=3,
-                client_encoding='utf8'
+                client_encoding="utf8",
             )
             self.cursor = self.connection.cursor()
 

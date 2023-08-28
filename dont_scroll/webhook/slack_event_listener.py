@@ -1,11 +1,11 @@
-import requests
 import os
 
+import requests
 from flask import Blueprint, Flask
 from PIL import Image
 from slackeventsapi import SlackEventAdapter
-from dont_scroll import config
-from dont_scroll import utils
+
+from dont_scroll import config, utils
 
 default = os.path.join(os.path.expanduser("~"), ".config/dont_scroll/config.toml")
 config.load(default)

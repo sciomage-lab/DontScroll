@@ -1,10 +1,8 @@
 import ssl
+from typing import Union
 
 import clip
 import torch
-
-from typing import Union
-
 from PIL import Image
 
 from dont_scroll.core.utils import cos_sim
@@ -57,11 +55,11 @@ class ImageRetrieval:
             # TODO
             pass
         elif isinstance(image, str):
-            image = Image.open(image_path)
+            image = Image.open(image)
         else:
             # TODO
             print("Error type error.")
-        
+
         image = self.preprocess(image).unsqueeze(0).to(self.device)
 
         with torch.no_grad():

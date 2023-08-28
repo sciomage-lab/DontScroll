@@ -31,7 +31,7 @@ docker volume rm postgres_postgresql_data
 
 - localhost : postgresql
 - user : dont_scroll
-- pw : passwd
+- pw : secret
 
 ## docker volume
 

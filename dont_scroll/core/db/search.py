@@ -7,6 +7,7 @@ from dont_scroll.core.db.postgresql import PostgreSQLClient
 from dont_scroll.core.image_retrieval import ImageRetrieval
 from dont_scroll.core.utils import cos_sim
 from dont_scroll.logger import applogger
+from dont_scroll.utils import generate_random_hash
 
 DB_CLIENT = PostgreSQLClient
 
@@ -25,18 +26,9 @@ class SearchEngine:
         if self.db_client.connection == None:
             applogger.critical("DB connect fail")
 
-    def add_vector(self, vector: list, url: str):
-        """Add vector
-        :param list vector: input vector
-        :param str url: input url
-        """
-        data = {
-            "vector": f"CUBE(ARRAY[{vector}])",
-            "file_url": url,
-        }
-        self.db_client.insert_data(data)
-
-    def add_vector(self, vector: list, url: str, client_msg_id: str, text: str):
+    def add_vector(
+        self, vector: list, url: str, client_msg_id: str = None, text: str = None
+    ):
         """Add vector
         :param list vector: input vector
         :param str url: input url
@@ -90,9 +82,15 @@ if __name__ == "__main__":
     )
 
     # Add
-    search.add_vector(image_vector_1.tolist(), image_path_1)
-    search.add_vector(image_vector_3.tolist(), image_path_3)
-    search.add_vector(image_vector_4.tolist(), image_path_4)
+    search.add_vector(
+        image_vector_1.tolist(), image_path_1, f"test-{generate_random_hash()}"
+    )
+    search.add_vector(
+        image_vector_3.tolist(), image_path_3, f"test-{generate_random_hash()}"
+    )
+    search.add_vector(
+        image_vector_4.tolist(), image_path_4, f"test-{generate_random_hash()}"
+    )
 
     # Search : Image
     ret = search.search_vector(image_vector_2.tolist(), 3)
