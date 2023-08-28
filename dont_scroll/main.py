@@ -1,11 +1,11 @@
 import argparse
 import os
 import sys
-
-import config
 import toml
+
 from flask import Flask
-from logger import applogger, set_all_logger_debug_mode
+from dont_scroll.logger import applogger, set_all_logger_debug_mode
+from dont_scroll import config
 
 
 def initialize(args):

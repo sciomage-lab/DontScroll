@@ -105,7 +105,7 @@ class PostgreSQLClient:
     # Delete
     def delete_data(self, condition: str, params: list = None):
         """Delete
-        :param str condition: HINT) "url = %s"
+        :param str condition: HINT) "file_url = %s"
         :param list params: HINT) ["http://aaa"]
         """
         query = f"DELETE FROM {self.db_table} WHERE {condition} = ANY(%s);"
@@ -138,7 +138,7 @@ if __name__ == "__main__":
     # Insert
     data = {
         "vector": "CUBE(ARRAY[2, 3, 4])",
-        "url": "http://aaa",
+        "file_url": "http://aaa",
     }
     client.insert_data(data)
 
@@ -148,6 +148,6 @@ if __name__ == "__main__":
         print(row)
 
     # Delete
-    client.delete_data("url", ["http://aaa"])
+    client.delete_data("file_url", ["http://aaa"])
 
     client.close()

@@ -36,7 +36,9 @@ psql -d dont_scroll_db -v ON_ERROR_STOP=1 --username $POSTGRES_USER <<-EOSQL
     CREATE TABLE IF NOT EXISTS public.slack_message (
         id SERIAL PRIMARY KEY,
         vector CUBE,
-        url TEXT
+        client_msg_id TEXT UNIQUE, -- 고유해야 하므로 UNIQUE 제약 조건을 추가
+        text TEXT,
+        file_url TEXT
     );
     ALTER TABLE public.slack_message OWNER to $POSTGRES_USER;
 EOSQL

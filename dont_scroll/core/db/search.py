@@ -32,7 +32,7 @@ class SearchEngine:
         """
         data = {
             "vector": f"CUBE(ARRAY[{vector}])",
-            "url": url,
+            "file_url": url,
         }
         self.db_client.insert_data(data)
 
@@ -84,16 +84,16 @@ if __name__ == "__main__":
     # Search : Image
     ret = search.search_vector(image_vector_2.tolist(), 3)
     print("Image search")
-    print(ret[0]["url"])
-    print(ret[1]["url"])
-    print(ret[2]["url"])
+    print(ret[0]["file_url"])
+    print(ret[1]["fileurl"])
+    print(ret[2]["file_url"])
 
     # Search : Text
     print("Text search")
     ret = search.search_vector(text_vector.tolist(), 3)
-    print(ret[0]["url"])
-    print(ret[1]["url"])
-    print(ret[2]["url"])
+    print(ret[0]["file_url"])
+    print(ret[1]["file_url"])
+    print(ret[2]["file_url"])
 
     # Delete
-    search.db_client.delete_data("url", [image_path_1, image_path_3, image_path_4])
+    search.db_client.delete_data("file_url", [image_path_1, image_path_3, image_path_4])
