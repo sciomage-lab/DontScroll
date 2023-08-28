@@ -1,5 +1,4 @@
 # Configs
-toml
 psycopg2
 
 # Torch
