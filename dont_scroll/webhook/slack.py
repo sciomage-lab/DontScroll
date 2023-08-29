@@ -175,9 +175,9 @@ def getLink(message_list):
 
 # module test
 if __name__ == "__main__":
-    toml = read_config()
-    auth_token = toml.BOT_USER_OAUTH_TOKEN
-    channel_id = toml.CHANNEL_ID
+    config = read_config()
+    auth_token = config.BOT_USER_OAUTH_TOKEN
+    channel_id = config.CHANNEL_ID
 
     slack_message_fetcher = SlackMessageFetcher(auth_token, channel_id)
 

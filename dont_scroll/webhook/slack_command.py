@@ -6,6 +6,10 @@ from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk import WebClient
 
 from dont_scroll import config
+from dont_scroll.core.db.search import SearchEngine
+from dont_scroll.core.image_retrieval import ImageRetrieval
+
+app = None
 
 
 def read_config():
@@ -33,9 +37,21 @@ def read_config():
 
     return config
 
+# get config keys
+config = read_config()
 
-# get toml keys
-toml = read_config()
+# ImageRetrieval
+image_retrieval = ImageRetrieval()
+
+# SearchEngine
+search = SearchEngine(
+    config.DB_HOST,
+    config.DB_PORT,
+    config.DB_USER,
+    config.DB_PASSWORD,
+    config.DB_NAME,
+    config.DB_TABLE,
+)
 
 # Initializes your app with your bot token and socket mode handler
 # get client
@@ -49,23 +65,36 @@ if __debug__:
 
     # TODO : logger
     print(f"[INFO] XXX : Certificate Verification Disablement!!")
-    app = App(client=WebClient(token=toml.BOT_USER_OAUTH_TOKEN, ssl=ssl_context))
+    app = App(client=WebClient(token=config.BOT_USER_OAUTH_TOKEN, ssl=ssl_context))
 else:
-    app = App(token=toml.BOT_USER_OAUTH_TOKEN)
+    app = App(token=config.BOT_USER_OAUTH_TOKEN)
 
 
 # https://api.slack.com/apps -> DontScroll
 # Feature -> Slash Commands -> Crate New Command -> 내부 항목 추가
-@app.command("/welcome")
+@app.command("/find")
 def handle_welcome_command(ack, command, respond):
     ack()
 
     user_id = command["user_id"]
-    need_drink = command["text"]
-    response_text = f"To <@{user_id}> : Welcome drink here! {need_drink}"
+    text = command["text"]
 
+    query = text
+    query_vector = image_retrieval.text_to_vector(query)
+
+    ret = search.search_vector(query_vector.tolist(), 3)
+    print(ret[0]["file_url"])
+    print(ret[1]["file_url"])
+    print(ret[2]["file_url"])
+
+    response_text = f"""
+    To <@{user_id}> : {text} search 
+    - {ret[0]['file_url']} 
+    - {ret[1]['file_url']} 
+    - {ret[2]['file_url']}"""
     respond(response_text)
 
 
 if __name__ == "__main__":
-    SocketModeHandler(app, toml.SLACK_APP_TOKEN).start()
+
+    SocketModeHandler(app, config.SLACK_APP_TOKEN).start()
