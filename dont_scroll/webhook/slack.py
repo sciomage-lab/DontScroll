@@ -228,10 +228,9 @@ if __name__ == "__main__":
             if is_exist:
                 pass
                 # DEBUG
-                print(f"pass : {client_msg_id} {file_url}")
+                # print(f"pass : {client_msg_id} {file_url}")
             else:
                 # Get image
-                print("get image")
                 image_buf = slack_message_fetcher.get_image(file_url)
                 if image_buf is None:
                     continue

@@ -14,7 +14,7 @@ config.load(path)
 if __name__ == "__main__":
     image_retrieval = ImageRetrieval()
 
-    query = "data center"
+    query = "wedding invitation"
     query_vector = image_retrieval.text_to_vector(query)
 
     search = SearchEngine(
@@ -28,6 +28,6 @@ if __name__ == "__main__":
 
     # Search
     ret = search.search_vector(query_vector.tolist(), 3)
-    print(ret[0]["file_url"])
-    print(ret[1]["file_url"])
-    print(ret[2]["file_url"])
+    print(f"{ret[0]['distance']} : {ret[0]['file_url']}")
+    print(f"{ret[1]['distance']} : {ret[1]['file_url']}")
+    print(f"{ret[2]['distance']} : {ret[2]['file_url']}")

@@ -89,8 +89,8 @@ def handle_welcome_command(ack, command, respond):
 
     response_text = f"""
     To <@{user_id}> : {text} search 
-    - {ret[0]['file_url']} 
-    - {ret[1]['file_url']}"""
+    - {ret[0]['distance']} : {ret[0]['file_url']} 
+    - {ret[1]['distance']} : {ret[1]['file_url']}"""
     respond(response_text)
 
 

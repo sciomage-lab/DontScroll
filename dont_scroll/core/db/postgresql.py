@@ -96,7 +96,8 @@ class PostgreSQLClient:
         :param n int : top-n
         """
         self.cursor.execute(
-            f"SELECT * FROM {self.db_table} ORDER BY vector <-> cube(ARRAY{vector}) LIMIT {n}"
+            f"SELECT *, vector <-> cube(ARRAY{vector}) AS distance FROM {self.db_table} ORDER BY distance LIMIT {n}"
+
         )
         result = self.cursor.fetchall()
         if result:
