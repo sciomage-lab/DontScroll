@@ -68,8 +68,6 @@ class SearchEngine:
         return self.search_msg_id(msg_id, 1)
 
 
-
-
 if __name__ == "__main__":
     path = os.path.join(os.path.expanduser("~"), ".config/dont_scroll/config.toml")
     config.load(path)

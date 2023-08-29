@@ -9,7 +9,7 @@ import requests
 from PIL import Image, UnidentifiedImageError
 # For test
 from rich.progress import (BarColumn, Progress, SpinnerColumn,
-                           TaskProgressColumn, TimeElapsedColumn,
+                           TaskProgressColumn, TextColumn, TimeElapsedColumn,
                            TimeRemainingColumn)
 from slack_sdk import WebClient
 
@@ -17,7 +17,7 @@ from dont_scroll import config
 from dont_scroll.core.db.search import SearchEngine
 from dont_scroll.core.image_retrieval import ImageRetrieval
 from dont_scroll.logger import applogger
-from dont_scroll.utils import set_timescope, is_image_file
+from dont_scroll.utils import is_image_file, set_timescope
 
 
 class SlackMessageFetcher:
@@ -187,8 +187,8 @@ if __name__ == "__main__":
     slack_message_fetcher = SlackMessageFetcher(auth_token, channel_id)
 
     # set tiemstamp
-    # TODO : 
-    start_datetime, end_datetime = set_timescope(2023, 7, 1, 0, 0, 0, 60, 0, 0, 0)
+    # TODO :
+    start_datetime, end_datetime = set_timescope(2023, 7, 1, 0, 0, 0, 90, 0, 0, 0)
 
     # Load message
     response_data = slack_message_fetcher.get_response(start_datetime, end_datetime)
@@ -215,19 +215,23 @@ if __name__ == "__main__":
     # print(json.dumps(message_list, indent=4, ensure_ascii=False))
 
     # Progress
+    client_msg_id = ""
     with Progress() as progress:
-        task = progress.add_task("insert DB", total=len(message_list))
+        task = progress.add_task("[insert DB]", total=len(message_list))
 
         for message in message_list:
             client_msg_id = message["client_msg_id"]
             text = message["text"]
             file_url = message["file_url"]
-            
+
             is_exist = search.exist_msg_id(client_msg_id)
             if is_exist:
+                pass
+                # DEBUG
                 print(f"pass : {client_msg_id} {file_url}")
             else:
                 # Get image
+                print("get image")
                 image_buf = slack_message_fetcher.get_image(file_url)
                 if image_buf is None:
                     continue

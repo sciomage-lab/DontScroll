@@ -118,7 +118,6 @@ class PostgreSQLClient:
             return [dict(zip(col_names, row)) for row in result]
         return None
 
-
     # Delete
     def delete_data(self, condition: str, params: list = None):
         """Delete

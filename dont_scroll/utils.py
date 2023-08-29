@@ -1,5 +1,5 @@
-import os
 import datetime
+import os
 import random
 import string
 
@@ -48,9 +48,10 @@ def generate_random_hash(length=16):
 
 
 def is_image_file(filepath):
-    image_extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.gif', '.tiff']
+    image_extensions = [".jpg", ".jpeg", ".png", ".bmp", ".gif", ".tiff"]
     _, ext = os.path.splitext(filepath)
     return ext.lower() in image_extensions
+
 
 if __name__ == "__main__":
     import sys

@@ -37,6 +37,7 @@ def read_config():
 
     return config
 
+
 # get config keys
 config = read_config()
 
@@ -94,5 +95,4 @@ def handle_welcome_command(ack, command, respond):
 
 
 if __name__ == "__main__":
-
     SocketModeHandler(app, config.SLACK_APP_TOKEN).start()
