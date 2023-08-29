@@ -104,6 +104,21 @@ class PostgreSQLClient:
             return [dict(zip(col_names, row)) for row in result]
         return None
 
+    def select_msg_id(self, msg_id, n):
+        """Select vector
+        :param str msg_id: client_msg_id
+        :param int n: top-n
+        """
+        self.cursor.execute(
+            f"SELECT * FROM {self.db_table} where client_msg_id like '{msg_id}' ORDER BY vector LIMIT {n}"
+        )
+        result = self.cursor.fetchall()
+        if result:
+            col_names = [desc[0] for desc in self.cursor.description]
+            return [dict(zip(col_names, row)) for row in result]
+        return None
+
+
     # Delete
     def delete_data(self, condition: str, params: list = None):
         """Delete

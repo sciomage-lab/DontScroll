@@ -1,3 +1,4 @@
+import os
 import datetime
 import random
 import string
@@ -45,6 +46,11 @@ def generate_random_hash(length=16):
     random_hash = "".join(random.choice(letters_and_digits) for i in range(length))
     return random_hash
 
+
+def is_image_file(filepath):
+    image_extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.gif', '.tiff']
+    _, ext = os.path.splitext(filepath)
+    return ext.lower() in image_extensions
 
 if __name__ == "__main__":
     import sys

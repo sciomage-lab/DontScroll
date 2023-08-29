@@ -17,7 +17,7 @@ from dont_scroll import config
 from dont_scroll.core.db.search import SearchEngine
 from dont_scroll.core.image_retrieval import ImageRetrieval
 from dont_scroll.logger import applogger
-from dont_scroll.utils import set_timescope
+from dont_scroll.utils import set_timescope, is_image_file
 
 
 class SlackMessageFetcher:
@@ -101,6 +101,11 @@ class SlackMessageFetcher:
         return ret
 
     def get_image(self, image_url):
+        """Get image file"""
+
+        if is_image_file(image_url) is False:
+            return None
+
         response = requests.get(
             image_url, headers={"Authorization": f"Bearer {self.auth_token}"}
         )
@@ -182,10 +187,12 @@ if __name__ == "__main__":
     slack_message_fetcher = SlackMessageFetcher(auth_token, channel_id)
 
     # set tiemstamp
+    # TODO : 
     start_datetime, end_datetime = set_timescope(2023, 7, 1, 0, 0, 0, 60, 0, 0, 0)
 
     # Load message
     response_data = slack_message_fetcher.get_response(start_datetime, end_datetime)
+    # DEBUG
     # print(json.dumps(response_data['messages'], indent=4, ensure_ascii=False))
 
     # ImageRetrieval
@@ -204,7 +211,8 @@ if __name__ == "__main__":
     # Parsing
     message_list = slack_message_fetcher.get_text_image(start_datetime, end_datetime)
 
-    print(json.dumps(message_list, indent=4, ensure_ascii=False))
+    # DEBUG
+    # print(json.dumps(message_list, indent=4, ensure_ascii=False))
 
     # Progress
     with Progress() as progress:
@@ -214,15 +222,21 @@ if __name__ == "__main__":
             client_msg_id = message["client_msg_id"]
             text = message["text"]
             file_url = message["file_url"]
-            image_buf = slack_message_fetcher.get_image(file_url)
-            if image_buf is None:
-                continue
+            
+            is_exist = search.exist_msg_id(client_msg_id)
+            if is_exist:
+                print(f"pass : {client_msg_id} {file_url}")
+            else:
+                # Get image
+                image_buf = slack_message_fetcher.get_image(file_url)
+                if image_buf is None:
+                    continue
 
-            # To vector
-            vector = image_retrieval.image_to_vector(image_buf).tolist()
+                # To vector
+                vector = image_retrieval.image_to_vector(image_buf).tolist()
 
-            # Insert DB
-            search.add_vector(vector, file_url, client_msg_id, text)
+                # Insert DB
+                search.add_vector(vector, file_url, client_msg_id, text)
 
             progress.advance(task)
 
@@ -236,6 +250,7 @@ if __name__ == "__main__":
     # message_link = getLink(text_list)
 
     # TEST
+    # TODO :
     query = "hedgehog"
     query_vector = image_retrieval.text_to_vector(query)
 

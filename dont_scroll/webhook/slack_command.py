@@ -85,13 +85,11 @@ def handle_welcome_command(ack, command, respond):
     ret = search.search_vector(query_vector.tolist(), 3)
     print(ret[0]["file_url"])
     print(ret[1]["file_url"])
-    print(ret[2]["file_url"])
 
     response_text = f"""
     To <@{user_id}> : {text} search 
     - {ret[0]['file_url']} 
-    - {ret[1]['file_url']} 
-    - {ret[2]['file_url']}"""
+    - {ret[1]['file_url']}"""
     respond(response_text)
 
 

@@ -50,6 +50,25 @@ class SearchEngine:
         ret = self.db_client.select_vector(vector, n)
         return ret
 
+    def search_msg_id(self, msg_id: list, n: int):
+        """
+        Search msg_id
+        :param str msg_id : msg_id
+        :param int n: top-n
+        """
+        ret = self.db_client.select_msg_id(msg_id, n)
+        return ret
+
+    def exist_msg_id(self, msg_id: list):
+        """
+        Search msg_id
+        :param str msg_id : msg_id
+        :param int n: top-n
+        """
+        return self.search_msg_id(msg_id, 1)
+
+
+
 
 if __name__ == "__main__":
     path = os.path.join(os.path.expanduser("~"), ".config/dont_scroll/config.toml")
