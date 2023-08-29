@@ -27,3 +27,5 @@ Werkzeug==2.3.6
 
 # slack
 slack_bolt
+
+rich

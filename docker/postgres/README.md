@@ -30,8 +30,10 @@ docker volume rm postgres_postgresql_data
 - pw : secret
 
 - localhost : postgresql
+- port : 5432
+- db : postgres
 - user : dont_scroll
-- pw : passwd
+- pw : secret
 
 ## docker volume
 

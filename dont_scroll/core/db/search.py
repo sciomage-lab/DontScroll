@@ -7,6 +7,7 @@ from dont_scroll.core.db.postgresql import PostgreSQLClient
 from dont_scroll.core.image_retrieval import ImageRetrieval
 from dont_scroll.core.utils import cos_sim
 from dont_scroll.logger import applogger
+from dont_scroll.utils import generate_random_hash
 
 DB_CLIENT = PostgreSQLClient
 
@@ -25,14 +26,18 @@ class SearchEngine:
         if self.db_client.connection == None:
             applogger.critical("DB connect fail")
 
-    def add_vector(self, vector: list, url: str):
+    def add_vector(
+        self, vector: list, url: str, client_msg_id: str = None, text: str = None
+    ):
         """Add vector
         :param list vector: input vector
         :param str url: input url
         """
         data = {
             "vector": f"CUBE(ARRAY[{vector}])",
-            "url": url,
+            "file_url": url,
+            "client_msg_id": client_msg_id,
+            "text": text,
         }
         self.db_client.insert_data(data)
 
@@ -44,6 +49,23 @@ class SearchEngine:
         """
         ret = self.db_client.select_vector(vector, n)
         return ret
+
+    def search_msg_id(self, msg_id: list, n: int):
+        """
+        Search msg_id
+        :param str msg_id : msg_id
+        :param int n: top-n
+        """
+        ret = self.db_client.select_msg_id(msg_id, n)
+        return ret
+
+    def exist_msg_id(self, msg_id: list):
+        """
+        Search msg_id
+        :param str msg_id : msg_id
+        :param int n: top-n
+        """
+        return self.search_msg_id(msg_id, 1)
 
 
 if __name__ == "__main__":
@@ -77,23 +99,29 @@ if __name__ == "__main__":
     )
 
     # Add
-    search.add_vector(image_vector_1.tolist(), image_path_1)
-    search.add_vector(image_vector_3.tolist(), image_path_3)
-    search.add_vector(image_vector_4.tolist(), image_path_4)
+    search.add_vector(
+        image_vector_1.tolist(), image_path_1, f"test-{generate_random_hash()}"
+    )
+    search.add_vector(
+        image_vector_3.tolist(), image_path_3, f"test-{generate_random_hash()}"
+    )
+    search.add_vector(
+        image_vector_4.tolist(), image_path_4, f"test-{generate_random_hash()}"
+    )
 
     # Search : Image
     ret = search.search_vector(image_vector_2.tolist(), 3)
     print("Image search")
-    print(ret[0]["url"])
-    print(ret[1]["url"])
-    print(ret[2]["url"])
+    print(ret[0]["file_url"])
+    print(ret[1]["fileurl"])
+    print(ret[2]["file_url"])
 
     # Search : Text
     print("Text search")
     ret = search.search_vector(text_vector.tolist(), 3)
-    print(ret[0]["url"])
-    print(ret[1]["url"])
-    print(ret[2]["url"])
+    print(ret[0]["file_url"])
+    print(ret[1]["file_url"])
+    print(ret[2]["file_url"])
 
     # Delete
-    search.db_client.delete_data("url", [image_path_1, image_path_3, image_path_4])
+    search.db_client.delete_data("file_url", [image_path_1, image_path_3, image_path_4])

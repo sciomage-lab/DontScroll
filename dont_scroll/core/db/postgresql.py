@@ -2,6 +2,7 @@ import psycopg2
 
 from dont_scroll import config
 from dont_scroll.logger import applogger
+from dont_scroll.utils import generate_random_hash
 
 
 class PostgreSQLClient:
@@ -36,6 +37,7 @@ class PostgreSQLClient:
                 password=password,
                 dbname=db_name,
                 connect_timeout=3,
+                client_encoding="utf8",
             )
             self.cursor = self.connection.cursor()
 
@@ -65,17 +67,17 @@ class PostgreSQLClient:
 
         # 특별한 처리가 필요한 'vector' 값에 대한 처리
         values_placeholders = []
+        params = []
         for key, value in data_dict.items():
             if key == "vector":
                 values_placeholders.append(value)
             else:
                 values_placeholders.append("%s")
+                params.append(value)
+
         values = ", ".join(values_placeholders)
 
-        query = f"INSERT INTO {self.db_table} ({columns}) VALUES ({values});"
-
-        # 'vector' 값을 제외한 나머지 값들
-        params = [v for k, v in data_dict.items() if k != "vector"]
+        query = f"INSERT INTO {self.db_table} ({columns}) VALUES ({values}) ON CONFLICT DO NOTHING;"
 
         self.execute_query(query, params)
         self.connection.commit()
@@ -94,7 +96,22 @@ class PostgreSQLClient:
         :param n int : top-n
         """
         self.cursor.execute(
-            f"SELECT * FROM {self.db_table} ORDER BY vector <-> cube(ARRAY{vector}) LIMIT {n}"
+            f"SELECT *, vector <-> cube(ARRAY{vector}) AS distance FROM {self.db_table} ORDER BY distance LIMIT {n}"
+
+        )
+        result = self.cursor.fetchall()
+        if result:
+            col_names = [desc[0] for desc in self.cursor.description]
+            return [dict(zip(col_names, row)) for row in result]
+        return None
+
+    def select_msg_id(self, msg_id, n):
+        """Select vector
+        :param str msg_id: client_msg_id
+        :param int n: top-n
+        """
+        self.cursor.execute(
+            f"SELECT * FROM {self.db_table} where client_msg_id like '{msg_id}' ORDER BY vector LIMIT {n}"
         )
         result = self.cursor.fetchall()
         if result:
@@ -105,7 +122,7 @@ class PostgreSQLClient:
     # Delete
     def delete_data(self, condition: str, params: list = None):
         """Delete
-        :param str condition: HINT) "url = %s"
+        :param str condition: HINT) "file_url = %s"
         :param list params: HINT) ["http://aaa"]
         """
         query = f"DELETE FROM {self.db_table} WHERE {condition} = ANY(%s);"
@@ -136,9 +153,12 @@ if __name__ == "__main__":
         exit()
 
     # Insert
+    test_id = f"test-{generate_random_hash()}"
     data = {
         "vector": "CUBE(ARRAY[2, 3, 4])",
-        "url": "http://aaa",
+        "file_url": "http://aaa",
+        "client_msg_id": test_id,
+        "text": None,
     }
     client.insert_data(data)
 
@@ -148,6 +168,6 @@ if __name__ == "__main__":
         print(row)
 
     # Delete
-    client.delete_data("url", ["http://aaa"])
+    client.delete_data("file_url", ["http://aaa"])
 
     client.close()

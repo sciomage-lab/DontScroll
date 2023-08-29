@@ -1,4 +1,5 @@
 import ssl
+from typing import Union
 
 import clip
 import torch
@@ -44,12 +45,22 @@ class ImageRetrieval:
         print("Label probs:", probs)
         return probs
 
-    def image_to_vector(self, image_path: str):
+    def image_to_vector(self, image: Union[Image.Image, str]):
         """
         Image to vector
-        :param image_path: image path
+        :param image: image path or Image.Image
         """
-        image = self.preprocess(Image.open(image_path)).unsqueeze(0).to(self.device)
+
+        if isinstance(image, Image.Image):
+            # TODO
+            pass
+        elif isinstance(image, str):
+            image = Image.open(image)
+        else:
+            # TODO
+            print("Error type error.")
+
+        image = self.preprocess(image).unsqueeze(0).to(self.device)
 
         with torch.no_grad():
             image_features = self.model.encode_image(image)
