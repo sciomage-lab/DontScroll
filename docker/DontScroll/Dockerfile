@@ -38,6 +38,4 @@ ENV DB_PASSWORD = "secret"
 ENV DB_NAME = "dont_scroll_db"
 ENV DB_TABLE = "public.slack_message"
 
-RUN ls -al /app
-RUN ls -al /app/keep_running.sh
 CMD ["/app/keep_running.sh"]

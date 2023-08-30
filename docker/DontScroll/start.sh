@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 tag=0.1.1
 
@@ -7,3 +7,5 @@ docker build \
       --progress=plain \
       -f Dockerfile \
       -t dont-scroll:${tag} .
+
+docker-compose up -d
