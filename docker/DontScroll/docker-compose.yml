@@ -1,21 +1,22 @@
 version: '3.8'
 services:
   dont_scroll:
+    container_name: dont-scroll
     image: dont-scroll:0.1.1
     restart: always
     environment:
-      SLACK_SIGNING_SECRET: "7b2c0ac86ec878a4e5e49234882cad48"
-      BOT_USER_OAUTH_TOKEN: "xoxb-5683781764640-5673057838865-sZGSiSGBwtvrsAdWJhaK238E"
-      SLACK_APP_TOKEN: "xapp-1-A05KE917ADR-5752660051095-274b9046983fb433c3917e979cd14b31f73e75ce68bd50d0f44747023645718c"
-      CHANNEL_ID: "C05L7M02A80"
-      DB_HOST: "127.0.0.1"
+      SLACK_SIGNING_SECRET: ${SLACK_SIGNING_SECRET}
+      BOT_USER_OAUTH_TOKEN: ${BOT_USER_OAUTH_TOKEN}
+      SLACK_APP_TOKEN: ${SLACK_APP_TOKEN}
+      CHANNEL_ID: ${CHANNEL_ID}
+      DB_HOST: dont-scroll-postgres # (local test) "127.0.0.1"
       DB_PORT: 5432
       DB_USER: "dont_scroll"
       DB_PASSWORD: "secret"
       DB_NAME: "dont_scroll_db"
       DB_TABLE: "public.slack_message"
     networks:
-      - dont_scroll_network
+      - postgres_dont_scroll_network
     volumes:
       - dont_scroll_data:/app
 
@@ -23,4 +24,5 @@ volumes:
   dont_scroll_data:
 
 networks:
-  dont_scroll_network:
+  postgres_dont_scroll_network:
+    external: true
