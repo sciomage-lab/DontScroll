@@ -10,4 +10,3 @@ In order to develop and contribute to this project, you need to load the setting
 ```bash
 . tools/set_env.sh
 ```
-
