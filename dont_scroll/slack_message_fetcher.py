@@ -45,6 +45,7 @@ class SlackMessageFetcher:
         applogger.debug(f"auth_token : {auth_token}")
         applogger.debug(f"channel_id : {channel_id}")
 
+
         # get client
         if __debug__:
             import ssl
