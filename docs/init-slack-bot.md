@@ -11,6 +11,7 @@
  - `groups:read`
  - `mpim:read`
  - `im:read`
+ - `files:read`
 
 # API Test
 
