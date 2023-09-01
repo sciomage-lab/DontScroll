@@ -1,6 +1,7 @@
 version: '3.8'
 services:
   postgresql:
+    container_name: dont-scroll-postgres
     image: cube-postgres:13
     restart: always
     environment:
@@ -10,11 +11,12 @@ services:
     volumes:
       - postgresql_data:/var/lib/postgresql/data
     networks:
-      - postgresql_network
+      - dont_scroll_network
     ports:
       - "5432:5432"
 
   pgadmin:
+    container_name: dont-scroll-pgadmin
     image: dpage/pgadmin4:latest
     restart: always
     environment:
@@ -24,7 +26,7 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     networks:
-      - postgresql_network
+      - dont_scroll_network
     ports:
       - "8080:80"
     depends_on:
@@ -35,4 +37,5 @@ volumes:
   pgadmin_data:
 
 networks:
-  postgresql_network:
+  dont_scroll_network:
+    driver: bridge

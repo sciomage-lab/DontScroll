@@ -42,6 +42,9 @@ class SlackMessageFetcher:
 
         self.auth_token = auth_token
         self.channel_id = channel_id
+        applogger.debug(f"auth_token : {auth_token}")
+        applogger.debug(f"channel_id : {channel_id}")
+
 
         # get client
         if __debug__:
