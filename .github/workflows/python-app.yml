@@ -31,7 +31,7 @@ jobs:
         python-version: [ '3.8', '3.9', '3.10' ]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     # Target Python version (Github host : cache)
     - name: Set up Python (Github Host)
@@ -95,7 +95,7 @@ jobs:
         python-version: [ '3.10' ]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     # Target Python version (Github host : cache)
     - name: Set up Python (Github Host)

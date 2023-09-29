@@ -2,9 +2,9 @@
 psycopg2
 
 # Torch
+--extra-index-url https://download.pytorch.org/whl/cpu
 torch
 torchvision
-torchaudio
 
 # CLIP
 ftfy

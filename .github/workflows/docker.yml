@@ -17,7 +17,7 @@ jobs:
         python-version: ['3.8', '3.9', '3.10']
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python (Github Host)
       uses: actions/setup-python@v4
