@@ -18,21 +18,22 @@ permissions:
   contents: read
 
 jobs:
-  build:
-
-    # Target OS and Python version
-    strategy:
-      matrix:
-        os: [ self-hosted, windows-latest ]
-        python-version: [ '3.8', '3.9', '3.10' ]
+  build-on-main:
+    if: github.ref == 'refs/heads/main'
 
     # Target OS
     runs-on: ${{ matrix.os }}
 
-    steps:
-    - uses: actions/checkout@v3
+    # Target OS and Python version
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+        python-version: [ '3.8', '3.9', '3.10' ]
 
-    # Target Python version (cache)
+    steps:
+    - uses: actions/checkout@v4
+
+    # Target Python version (Github host : cache)
     - name: Set up Python (Github Host)
       uses: actions/setup-python@v4
       with:
@@ -40,7 +41,7 @@ jobs:
         cache: 'pip'
       if: matrix.os == 'ubuntu-latest' || matrix.os == 'windows-latest'
 
-    # Target Python version (non-cache)
+    # Target Python version (Self-host : non-cache)
     - name: Set up Python (Self Host)
       uses: actions/setup-python@v4
       with:
@@ -54,7 +55,71 @@ jobs:
       if: matrix.os == 'ubuntu-latest' || matrix.os == 'self-hosted'
 
     # PYTHONPATH for Windows
-    - name: Set up PYTHONPATH (Windws)
+    - name: Set up PYTHONPATH (Windows)
+      run: |
+        echo "PYTHONPATH=$env:GITHUB_WORKSPACE" >> $env:GITHUB_ENV
+      if: matrix.os == 'windows-latest'
+
+    # Install dependencies for Linux
+    - name: Install dependencies (Linux)
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+      if: matrix.os == 'ubuntu-latest' || matrix.os == 'self-hosted'
+
+    # Install dependencies for Windows
+    - name: Install dependencies (Windows)
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        if (Test-Path requirements.txt) { pip install -r requirements.txt }
+        if (Test-Path requirements-dev.txt) { pip install -r requirements-dev.txt }
+      if: matrix.os == 'windows-latest'
+
+    - name: Test with pytest
+      run: |
+        pytest -k "not skip_docker"
+
+  build-on-feat:
+    if: startsWith(github.ref, 'refs/heads/feat/')
+
+    # Target OS
+    runs-on: ${{ matrix.os }}
+
+    # Target OS and Python version
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+        python-version: [ '3.10' ]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # Target Python version (Github host : cache)
+    - name: Set up Python (Github Host)
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+      if: matrix.os == 'ubuntu-latest' || matrix.os == 'windows-latest'
+
+    # Target Python version (Self-host : non-cache)
+    - name: Set up Python (Self Host)
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+      if: matrix.os == 'self-hosted'
+
+    # PYTHONPATH for Linux
+    - name: Set up PYTHONPATH (Linux)
+      run: |
+        echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+      if: matrix.os == 'ubuntu-latest' || matrix.os == 'self-hosted'
+
+    # PYTHONPATH for Windows
+    - name: Set up PYTHONPATH (Windows)
       run: |
         echo "PYTHONPATH=$env:GITHUB_WORKSPACE" >> $env:GITHUB_ENV
       if: matrix.os == 'windows-latest'

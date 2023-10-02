@@ -4,22 +4,20 @@ on:
   push:
     branches:
       - main
-      - 'feat/**'
-      - 'FEAT/**'
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
-  build-and-test:
-    runs-on: self-hosted
+  docker-build-and-test:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ self-hosted ]
+        os: [ ubuntu-latest ]
         python-version: ['3.8', '3.9', '3.10']
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python (Github Host)
       uses: actions/setup-python@v4
