@@ -17,7 +17,7 @@ from dont_scroll import config
 from dont_scroll.core.db.search import SearchEngine
 from dont_scroll.core.image_retrieval import ImageRetrieval
 from dont_scroll.logger import applogger
-from dont_scroll.utils import is_image_file, set_timescope
+from dont_scroll.utils import is_image_file, set_timescope, timestamp_to_str
 
 
 class SlackMessageFetcher:
@@ -70,37 +70,59 @@ class SlackMessageFetcher:
         )
 
     def get_text_image(self, oldest_timestamp, latest_timestamp):
+        """Get text & image messages
+        """
+
         response = self.get_response(oldest_timestamp, latest_timestamp)
 
         ret = []
         if response["ok"]:
             messages = response["messages"]
+        else:
+            # Fail
+            return ret
 
-            for message in messages:
-                # print(f"message : {message}")
-                # message
-                if (
-                    "text" in message
-                    and "files" in message
-                    and "client_msg_id" in message
-                ):
-                    text = message["text"] or "(empty)"
+        for message in messages:
+            # message
+            # print(f"message : {message}")
+
+            if ("text" in message and "client_msg_id" in message):
+
+                text = message["text"] or "(empty)"
+                client_msg_id = message["client_msg_id"]
+                ts = timestamp_to_str(message["ts"])
+
+                # Exist files
+                if "files" in message:
+                    # Exist files
                     files = message["files"]
-                    client_msg_id = message["client_msg_id"]
 
-                    # images
+                    # Loop : image files
                     for file in files:
                         file_url = file["url_private"]
                         file_id = file["id"]
 
-                        print(f"[{client_msg_id}] {text} : {file_url[:100]}")
+                        print(f"[{client_msg_id}] {ts} : {text} : {file_url[:100]}")
                         ret.append(
                             {
                                 "client_msg_id": f"{client_msg_id}-{file_id}",
                                 "text": text,
                                 "file_url": file_url,
+                                "ts": ts,
                             }
                         )
+                else:
+                    # No Exist files
+                    print(f"[{client_msg_id}] {ts} : {text} : {file_url[:100]}")
+                    ret.append(
+                        {
+                            "client_msg_id": f"{client_msg_id}",
+                            "text": text,
+                            "file_url": None,
+                            "ts": ts,
+                        }
+                    )
+
         return ret
 
     def get_image(self, image_url):
@@ -191,7 +213,7 @@ if __name__ == "__main__":
 
     # set tiemstamp
     # TODO :
-    start_datetime, end_datetime = set_timescope(2023, 7, 1, 0, 0, 0, 90, 0, 0, 0)
+    start_datetime, end_datetime = set_timescope(2023, 9, 1, 0, 0, 0, 90, 0, 0, 0)
 
     # Load message
     response_data = slack_message_fetcher.get_response(start_datetime, end_datetime)
@@ -213,6 +235,8 @@ if __name__ == "__main__":
 
     # Parsing
     message_list = slack_message_fetcher.get_text_image(start_datetime, end_datetime)
+
+    exit()
 
     # DEBUG
     # print(json.dumps(message_list, indent=4, ensure_ascii=False))
