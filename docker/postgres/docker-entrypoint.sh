@@ -35,7 +35,7 @@ psql -d dont_scroll_db -v ON_ERROR_STOP=1 --username $POSTGRES_USER <<-EOSQL
 
     CREATE TABLE IF NOT EXISTS public.slack_message (
         id SERIAL PRIMARY KEY,
-        created_at TIMESTAMP,
+        ts TIMESTAMP,
         vector CUBE,
         client_msg_id TEXT UNIQUE, -- 고유해야 하므로 UNIQUE 제약 조건을 추가
         text TEXT,

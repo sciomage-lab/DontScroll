@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+import datetime
 
 from dont_scroll import config
 from dont_scroll.core.db.postgresql import PostgreSQLClient
@@ -27,7 +28,7 @@ class SearchEngine:
             applogger.critical("DB connect fail")
 
     def add_vector(
-        self, vector: list, url: str, client_msg_id: str = None, text: str = None
+        self, vector: list, url: str, client_msg_id: str = None, text: str = None, ts_datetime: datetime.datetime = None
     ):
         """Add vector
         :param list vector: input vector
@@ -38,6 +39,22 @@ class SearchEngine:
             "file_url": url,
             "client_msg_id": client_msg_id,
             "text": text,
+            "ts": ts_datetime
+        }
+        self.db_client.insert_data(data)
+
+    # TODO :
+    def add_message(
+        self, client_msg_id: str = None, text: str = None, ts_datetime: datetime.datetime = None
+    ):
+        """Add vector
+        :param list vector: input vector
+        :param str url: input url
+        """
+        data = {
+            "client_msg_id": client_msg_id,
+            "text": text,
+            "ts": ts_datetime
         }
         self.db_client.insert_data(data)
 

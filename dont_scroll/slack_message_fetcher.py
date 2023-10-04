@@ -24,7 +24,7 @@ from dont_scroll import config
 from dont_scroll.core.db.search import SearchEngine
 from dont_scroll.core.image_retrieval import ImageRetrieval
 from dont_scroll.logger import applogger
-from dont_scroll.utils import is_image_file, set_timescope, timestamp_to_str
+from dont_scroll.utils import is_image_file, set_timescope, timestamp_to_str, unix_timestamp_to_datetime
 
 
 class SlackMessageFetcher:
@@ -101,7 +101,7 @@ class SlackMessageFetcher:
             if "text" in message and "client_msg_id" in message:
                 text = message["text"] or "(empty)"
                 client_msg_id = message["client_msg_id"]
-                ts = timestamp_to_str(message["ts"])
+                ts = float(message["ts"])
 
                 # Exist files
                 if "files" in message:
@@ -113,7 +113,7 @@ class SlackMessageFetcher:
                         file_url = file["url_private"]
                         file_id = file["id"]
 
-                        print(f"[{client_msg_id}] {ts} : {text} : {file_url[:100]}")
+                        print(f"[{client_msg_id}] : {ts} : {timestamp_to_str(ts)} : {text} : {file_url[:100]}")
                         ret.append(
                             {
                                 "client_msg_id": f"{client_msg_id}-{file_id}",
@@ -124,7 +124,7 @@ class SlackMessageFetcher:
                         )
                 else:
                     # No Exist files
-                    print(f"[{client_msg_id}] {ts} : {text}")
+                    print(f"[{client_msg_id}] : {ts} : {timestamp_to_str(ts)}: {text}")
                     ret.append(
                         {
                             "client_msg_id": f"{client_msg_id}",
@@ -242,8 +242,7 @@ if __name__ == "__main__":
     # Parsing
     message_list = slack_message_fetcher.get_messages(start_datetime, end_datetime)
     # DEBUG
-    print(json.dumps(message_list, indent=4, ensure_ascii=False))
-    exit()
+    # print(json.dumps(message_list, indent=4, ensure_ascii=False))
 
     # Progress
     client_msg_id = ""
@@ -253,12 +252,16 @@ if __name__ == "__main__":
         for message in message_list:
             client_msg_id = message["client_msg_id"]
             text = message["text"]
+            ts = message["ts"]
             file_url = message["file_url"]
 
             is_exist = search.exist_msg_id(client_msg_id)
             if is_exist:
-                pass # already exists (duplicate)
-            else:
+                # already exists (duplicate)
+                continue 
+            elif file_url is not None:
+                # Exist file url
+            
                 # Get image
                 image_buf = slack_message_fetcher.get_image(file_url)
                 if image_buf is None:
@@ -268,7 +271,14 @@ if __name__ == "__main__":
                 vector = image_retrieval.image_to_vector(image_buf).tolist()
 
                 # Insert DB
-                search.add_vector(vector, file_url, client_msg_id, text)
+                ts_datetime = unix_timestamp_to_datetime(ts)
+                search.add_vector(vector, file_url, client_msg_id, text, ts_datetime)
+            else:
+                # No exist file url
+
+                # Insert DB
+                ts_datetime = unix_timestamp_to_datetime(ts)
+                search.add_message(client_msg_id, text, ts_datetime)
 
             progress.advance(task)
 
