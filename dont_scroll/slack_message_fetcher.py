@@ -7,10 +7,17 @@ from io import BytesIO
 
 import requests
 from PIL import Image, UnidentifiedImageError
+
 # For test
-from rich.progress import (BarColumn, Progress, SpinnerColumn,
-                           TaskProgressColumn, TextColumn, TimeElapsedColumn,
-                           TimeRemainingColumn)
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TaskProgressColumn,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
 from slack_sdk import WebClient
 
 from dont_scroll import config
@@ -45,7 +52,6 @@ class SlackMessageFetcher:
         applogger.debug(f"auth_token : {auth_token}")
         applogger.debug(f"channel_id : {channel_id}")
 
-
         # get client
         if __debug__:
             import ssl
@@ -61,19 +67,24 @@ class SlackMessageFetcher:
         else:
             self.client = WebClient(token=auth_token)
 
-    def get_response(self):
+    def get_all_messages(self):
+        """Get all message"""
         return self.client.conversations_history(channel=self.channel_id)
 
-    def get_response(self, oldest_timestamp, latest_timestamp):
+    def get_all_messages(self, oldest_timestamp, latest_timestamp):
+        """Get all message
+        :param oldest_timestamp:
+        :param latest_timestamp:
+        """
         return self.client.conversations_history(
             channel=self.channel_id, oldest=oldest_timestamp, latest=latest_timestamp
         )
 
-    def get_text_image(self, oldest_timestamp, latest_timestamp):
-        """Get text & image messages
-        """
+    def get_messages(self, oldest_timestamp, latest_timestamp):
+        """Get messages (text & image)"""
 
-        response = self.get_response(oldest_timestamp, latest_timestamp)
+        # Get all message
+        response = self.get_all_messages(oldest_timestamp, latest_timestamp)
 
         ret = []
         if response["ok"]:
@@ -82,12 +93,12 @@ class SlackMessageFetcher:
             # Fail
             return ret
 
+        # Parsing message
         for message in messages:
-            # message
+            # Debug
             # print(f"message : {message}")
 
-            if ("text" in message and "client_msg_id" in message):
-
+            if "text" in message and "client_msg_id" in message:
                 text = message["text"] or "(empty)"
                 client_msg_id = message["client_msg_id"]
                 ts = timestamp_to_str(message["ts"])
@@ -113,7 +124,7 @@ class SlackMessageFetcher:
                         )
                 else:
                     # No Exist files
-                    print(f"[{client_msg_id}] {ts} : {text} : {file_url[:100]}")
+                    print(f"[{client_msg_id}] {ts} : {text}")
                     ret.append(
                         {
                             "client_msg_id": f"{client_msg_id}",
@@ -215,11 +226,6 @@ if __name__ == "__main__":
     # TODO :
     start_datetime, end_datetime = set_timescope(2023, 9, 1, 0, 0, 0, 90, 0, 0, 0)
 
-    # Load message
-    response_data = slack_message_fetcher.get_response(start_datetime, end_datetime)
-    # DEBUG
-    # print(json.dumps(response_data['messages'], indent=4, ensure_ascii=False))
-
     # ImageRetrieval
     image_retrieval = ImageRetrieval()
 
@@ -234,12 +240,10 @@ if __name__ == "__main__":
     )
 
     # Parsing
-    message_list = slack_message_fetcher.get_text_image(start_datetime, end_datetime)
-
-    exit()
-
+    message_list = slack_message_fetcher.get_messages(start_datetime, end_datetime)
     # DEBUG
-    # print(json.dumps(message_list, indent=4, ensure_ascii=False))
+    print(json.dumps(message_list, indent=4, ensure_ascii=False))
+    exit()
 
     # Progress
     client_msg_id = ""
@@ -253,9 +257,7 @@ if __name__ == "__main__":
 
             is_exist = search.exist_msg_id(client_msg_id)
             if is_exist:
-                pass
-                # DEBUG
-                # print(f"pass : {client_msg_id} {file_url}")
+                pass # already exists (duplicate)
             else:
                 # Get image
                 image_buf = slack_message_fetcher.get_image(file_url)
