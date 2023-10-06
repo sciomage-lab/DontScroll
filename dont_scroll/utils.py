@@ -6,6 +6,7 @@ import string
 import numpy
 import requests
 from PIL import Image
+from typing import Union
 
 
 def read_image_from_url(url, token):
@@ -31,6 +32,9 @@ def set_timescope(
     add_minute,
     add_second,
 ):
+    """
+    :return: unix timestamp. ex) 1695970406.104439
+    """
     start_date = datetime.datetime(
         start_year, start_month, start_day, start_hour, start_minute, start_second
     )
@@ -51,6 +55,27 @@ def is_image_file(filepath):
     image_extensions = [".jpg", ".jpeg", ".png", ".bmp", ".gif", ".tiff"]
     _, ext = os.path.splitext(filepath)
     return ext.lower() in image_extensions
+
+
+def timestamp_to_str(timestamp: str):
+
+    timestamp = float(timestamp)
+
+    # 정수부와 소수부 분리
+    int_part, frac_part = divmod(timestamp, 1)
+
+    # 정수부를 datetime 객체로 변환
+    dt_object = datetime.datetime.fromtimestamp(int_part)
+
+    # datetime 객체를 문자열로 변환
+    dt_string = dt_object.strftime('%Y-%m-%d %H-%M-%S')
+
+    return dt_string
+
+
+def unix_timestamp_to_datetime(unix_timestamp: Union[int, float]) -> datetime.datetime:
+    ret_datetime = datetime.datetime.fromtimestamp(unix_timestamp)
+    return ret_datetime 
 
 
 if __name__ == "__main__":

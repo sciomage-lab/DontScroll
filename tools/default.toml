@@ -1,7 +1,17 @@
+# https://api.slack.com/apps
+
+# Basic Information -> Signing Secret
 SLACK_SIGNING_SECRET="YOUR-SIGING-KEY"
-BOT_USER_OAUTH_TOKEN="xoxb-YOUR-BOT-TOKEN"
+
+# Basic Information -> App-Level Tokens -> xapp-*
 SLACK_APP_TOKEN="xapp-YOUR-APP-TOKEN"
+
+# Install App -> xoxb-*
+BOT_USER_OAUTH_TOKEN="xoxb-YOUR-BOT-TOKEN"
+
+# https://api.slack.com/methods/conversations.list/test -> No token & xoxb-*
 CHANNEL_ID="YOUR-CHANNEL-ID"
+
 DB_HOST = "127.0.0.1"
 DB_PORT = 5432
 DB_USER = "dont_scroll"

@@ -7,17 +7,24 @@ from io import BytesIO
 
 import requests
 from PIL import Image, UnidentifiedImageError
+
 # For test
-from rich.progress import (BarColumn, Progress, SpinnerColumn,
-                           TaskProgressColumn, TextColumn, TimeElapsedColumn,
-                           TimeRemainingColumn)
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TaskProgressColumn,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
 from slack_sdk import WebClient
 
 from dont_scroll import config
 from dont_scroll.core.db.search import SearchEngine
 from dont_scroll.core.image_retrieval import ImageRetrieval
 from dont_scroll.logger import applogger
-from dont_scroll.utils import is_image_file, set_timescope
+from dont_scroll.utils import is_image_file, set_timescope, timestamp_to_str, unix_timestamp_to_datetime
 
 
 class SlackMessageFetcher:
@@ -45,7 +52,6 @@ class SlackMessageFetcher:
         applogger.debug(f"auth_token : {auth_token}")
         applogger.debug(f"channel_id : {channel_id}")
 
-
         # get client
         if __debug__:
             import ssl
@@ -61,46 +67,73 @@ class SlackMessageFetcher:
         else:
             self.client = WebClient(token=auth_token)
 
-    def get_response(self):
+    def get_all_messages(self):
+        """Get all message"""
         return self.client.conversations_history(channel=self.channel_id)
 
-    def get_response(self, oldest_timestamp, latest_timestamp):
+    def get_all_messages(self, oldest_timestamp, latest_timestamp):
+        """Get all message
+        :param oldest_timestamp:
+        :param latest_timestamp:
+        """
         return self.client.conversations_history(
             channel=self.channel_id, oldest=oldest_timestamp, latest=latest_timestamp
         )
 
-    def get_text_image(self, oldest_timestamp, latest_timestamp):
-        response = self.get_response(oldest_timestamp, latest_timestamp)
+    def get_messages(self, oldest_timestamp, latest_timestamp):
+        """Get messages (text & image)"""
+
+        # Get all message
+        response = self.get_all_messages(oldest_timestamp, latest_timestamp)
 
         ret = []
         if response["ok"]:
             messages = response["messages"]
+        else:
+            # Fail
+            return ret
 
-            for message in messages:
-                # print(f"message : {message}")
-                # message
-                if (
-                    "text" in message
-                    and "files" in message
-                    and "client_msg_id" in message
-                ):
-                    text = message["text"] or "(empty)"
+        # Parsing message
+        for message in messages:
+            # Debug
+            # print(f"message : {message}")
+
+            if "text" in message and "client_msg_id" in message:
+                text = message["text"] or "(empty)"
+                client_msg_id = message["client_msg_id"]
+                ts = float(message["ts"])
+
+                # Exist files
+                if "files" in message:
+                    # Exist files
                     files = message["files"]
-                    client_msg_id = message["client_msg_id"]
 
-                    # images
+                    # Loop : image files
                     for file in files:
                         file_url = file["url_private"]
                         file_id = file["id"]
 
-                        print(f"[{client_msg_id}] {text} : {file_url[:100]}")
+                        print(f"[{client_msg_id}] : {ts} : {timestamp_to_str(ts)} : {text} : {file_url[:100]}")
                         ret.append(
                             {
                                 "client_msg_id": f"{client_msg_id}-{file_id}",
                                 "text": text,
                                 "file_url": file_url,
+                                "ts": ts,
                             }
                         )
+                else:
+                    # No Exist files
+                    print(f"[{client_msg_id}] : {ts} : {timestamp_to_str(ts)}: {text}")
+                    ret.append(
+                        {
+                            "client_msg_id": f"{client_msg_id}",
+                            "text": text,
+                            "file_url": None,
+                            "ts": ts,
+                        }
+                    )
+
         return ret
 
     def get_image(self, image_url):
@@ -191,12 +224,7 @@ if __name__ == "__main__":
 
     # set tiemstamp
     # TODO :
-    start_datetime, end_datetime = set_timescope(2023, 7, 1, 0, 0, 0, 90, 0, 0, 0)
-
-    # Load message
-    response_data = slack_message_fetcher.get_response(start_datetime, end_datetime)
-    # DEBUG
-    # print(json.dumps(response_data['messages'], indent=4, ensure_ascii=False))
+    start_datetime, end_datetime = set_timescope(2023, 9, 1, 0, 0, 0, 90, 0, 0, 0)
 
     # ImageRetrieval
     image_retrieval = ImageRetrieval()
@@ -212,8 +240,7 @@ if __name__ == "__main__":
     )
 
     # Parsing
-    message_list = slack_message_fetcher.get_text_image(start_datetime, end_datetime)
-
+    message_list = slack_message_fetcher.get_messages(start_datetime, end_datetime)
     # DEBUG
     # print(json.dumps(message_list, indent=4, ensure_ascii=False))
 
@@ -225,14 +252,16 @@ if __name__ == "__main__":
         for message in message_list:
             client_msg_id = message["client_msg_id"]
             text = message["text"]
+            ts = message["ts"]
             file_url = message["file_url"]
 
             is_exist = search.exist_msg_id(client_msg_id)
             if is_exist:
-                pass
-                # DEBUG
-                # print(f"pass : {client_msg_id} {file_url}")
-            else:
+                # already exists (duplicate)
+                continue 
+            elif file_url is not None:
+                # Exist file url
+            
                 # Get image
                 image_buf = slack_message_fetcher.get_image(file_url)
                 if image_buf is None:
@@ -242,7 +271,14 @@ if __name__ == "__main__":
                 vector = image_retrieval.image_to_vector(image_buf).tolist()
 
                 # Insert DB
-                search.add_vector(vector, file_url, client_msg_id, text)
+                ts_datetime = unix_timestamp_to_datetime(ts)
+                search.add_vector(vector, file_url, client_msg_id, text, ts_datetime)
+            else:
+                # No exist file url
+
+                # Insert DB
+                ts_datetime = unix_timestamp_to_datetime(ts)
+                search.add_message(client_msg_id, text, ts_datetime)
 
             progress.advance(task)
 
