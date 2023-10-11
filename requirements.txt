@@ -29,3 +29,6 @@ Werkzeug==2.3.6
 slack_bolt
 
 rich
+
+# LLM
+llama-cpp-python
