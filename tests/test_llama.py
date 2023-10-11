@@ -10,7 +10,7 @@ if __name__ == "__main__":
 
     print(f"prompt : {prompt}")
 
-    output = llm(prompt)
+    output = llm(prompt, temperature=0.2)
     print(output)
     print("===== RESULT =====")
     print(output["choices"][0]["text"].strip())
