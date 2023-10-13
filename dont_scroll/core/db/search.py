@@ -96,7 +96,7 @@ class SearchEngine:
         ret = self.db_client.select_top_n_msg(n)
         return ret
 
-    def exist_msg_id(self, msg_id: list):
+    def search_by_msg_id(self, msg_id: list):
         """
         Search msg_id
         :param str msg_id : msg_id

@@ -255,7 +255,7 @@ if __name__ == "__main__":
             file_url = message["file_url"]
             user_id = message["user_id"]
 
-            is_exist = search.exist_msg_id(client_msg_id)
+            is_exist = search.search_by_msg_id(client_msg_id)
             if is_exist:
                 # already exists (duplicate)
                 continue
