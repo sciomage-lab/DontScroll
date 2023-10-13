@@ -26,11 +26,20 @@ class TextMessage:
             config.DB_TABLE,
         )
 
+        self.special_chars = ["/", "!", "`", "\\", "<", "(", "["]
+
     def get_all_message(self, top_n: int = 1000):
         messages = self.search.top_n_msg(100)
 
         text = ""
         for message in messages:
+            if message["text"] == "(empty)":
+                continue
+
+            first_char = message["text"][0] if 1 < len(message["text"]) else ""
+            if first_char in self.special_chars:
+                continue
+
             text += f"{message['user_id']} : {message['text']}\n"
 
         return text

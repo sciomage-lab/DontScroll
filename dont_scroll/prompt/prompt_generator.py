@@ -2,7 +2,7 @@ import os
 
 
 class PromptGenerator:
-    def __init__(self, message: str=None, question=None):
+    def __init__(self, message: str = None, question=None):
         # TODO: Options
         self.prompt_root = os.path.dirname(os.path.abspath(__file__))
 
@@ -45,7 +45,7 @@ class PromptGenerator:
         ret += "```"
         ret += "\n"
 
-        # Question 
+        # Question
         if self.question is None:
             ret += self.read_txt_file(f"{self.prompt_root}/user-post.txt")
         else:

@@ -11,9 +11,9 @@ if __name__ == "__main__":
     test_messages = text_message.get_all_message()
     print(f"{test_messages}")
 
-    llm = Llama(model_path="models/tinyllama-1.1b-1t-openorca.Q5_K_M.gguf", n_ctx=1024)
+    llm = Llama(model_path="models/tinyllama-1.1b-1t-openorca.Q5_K_M.gguf", n_ctx=2048)
 
-    prompt_generator = PromptGenerator(test_messages, "When is the meeting held?")
+    prompt_generator = PromptGenerator(test_messages, "Where is the company car?")
     prompt = str(prompt_generator)
 
     print(f"prompt : {prompt}")

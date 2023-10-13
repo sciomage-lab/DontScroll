@@ -178,3 +178,4 @@ pyrightconfig.json
 *.png
 
 models/**
+dont_scroll/sample.json

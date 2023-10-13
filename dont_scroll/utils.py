@@ -2,11 +2,11 @@ import datetime
 import os
 import random
 import string
+from typing import Union
 
 import numpy
 import requests
 from PIL import Image
-from typing import Union
 
 
 def read_image_from_url(url, token):
@@ -75,6 +75,14 @@ def timestamp_to_str(timestamp: str):
 def unix_timestamp_to_datetime(unix_timestamp: Union[int, float]) -> datetime.datetime:
     ret_datetime = datetime.datetime.fromtimestamp(unix_timestamp)
     return ret_datetime
+
+
+def remove_special_chars_and_spaces(s: str) -> str:
+    # 문자열 앞부분에서 특수문자와 공백을 제거
+    for i, char in enumerate(s):
+        if char.isalnum():
+            return s[i:]
+    return ""
 
 
 if __name__ == "__main__":

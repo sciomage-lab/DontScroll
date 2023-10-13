@@ -1,7 +1,7 @@
+import datetime
 import os
 
 import numpy as np
-import datetime
 
 from dont_scroll import config
 from dont_scroll.core.db.postgresql import PostgreSQLClient
