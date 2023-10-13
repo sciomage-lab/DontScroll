@@ -34,6 +34,9 @@ class TextMessage:
             if message["text"] == "(empty)":
                 continue
 
+            if message["text"] == None:
+                continue
+
             first_char = message["text"][0] if 1 < len(message["text"]) else ""
             if first_char in self.special_chars:
                 continue
