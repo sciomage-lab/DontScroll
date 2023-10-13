@@ -1,6 +1,7 @@
 import argparse
 import os
 
+from llama_cpp import Llama
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk import WebClient
@@ -8,6 +9,9 @@ from slack_sdk import WebClient
 from dont_scroll import config
 from dont_scroll.core.db.search import SearchEngine
 from dont_scroll.core.image_retrieval import ImageRetrieval
+from dont_scroll.core.text_message import TextMessage
+from dont_scroll.prompt.prompt_generator import PromptGenerator
+from dont_scroll.utils import remove_special_chars_and_spaces
 
 app = None
 
@@ -54,6 +58,15 @@ search = SearchEngine(
     config.DB_TABLE,
 )
 
+# Text Message
+text_message = TextMessage()
+test_messages = text_message.get_all_message()
+print(f"{test_messages}")
+
+# LLM Model
+llm = Llama(model_path="models/tinyllama-1.1b-1t-openorca.Q5_K_M.gguf", n_ctx=2048)
+
+
 # Initializes your app with your bot token and socket mode handler
 # get client
 if __debug__:
@@ -91,6 +104,30 @@ def handle_welcome_command(ack, command, respond):
     To <@{user_id}> : {text} search 
     - {ret[0]['distance']} : {ret[0]['file_url']} 
     - {ret[1]['distance']} : {ret[1]['file_url']}"""
+    respond(response_text)
+
+
+@app.command("/q")
+def handle_welcome_command(ack, command, respond):
+    ack()
+
+    user_id = command["user_id"]
+    query = command["text"]
+
+    prompt_generator = PromptGenerator(test_messages, query)
+    prompt = str(prompt_generator)
+
+    print(f"prompt : {prompt}")
+
+    output = llm(prompt, temperature=0.2)
+    print(output)
+    print("===== RESULT =====")
+    result = remove_special_chars_and_spaces(output["choices"][0]["text"])
+    print(result)
+
+    response_text = f"""
+    To <@{user_id}> : {query} : 
+    `{result}`"""
     respond(response_text)
 
 

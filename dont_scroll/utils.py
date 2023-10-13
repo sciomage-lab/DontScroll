@@ -2,11 +2,11 @@ import datetime
 import os
 import random
 import string
+from typing import Union
 
 import numpy
 import requests
 from PIL import Image
-from typing import Union
 
 
 def read_image_from_url(url, token):
@@ -58,7 +58,6 @@ def is_image_file(filepath):
 
 
 def timestamp_to_str(timestamp: str):
-
     timestamp = float(timestamp)
 
     # 정수부와 소수부 분리
@@ -68,14 +67,22 @@ def timestamp_to_str(timestamp: str):
     dt_object = datetime.datetime.fromtimestamp(int_part)
 
     # datetime 객체를 문자열로 변환
-    dt_string = dt_object.strftime('%Y-%m-%d %H-%M-%S')
+    dt_string = dt_object.strftime("%Y-%m-%d %H-%M-%S")
 
     return dt_string
 
 
 def unix_timestamp_to_datetime(unix_timestamp: Union[int, float]) -> datetime.datetime:
     ret_datetime = datetime.datetime.fromtimestamp(unix_timestamp)
-    return ret_datetime 
+    return ret_datetime
+
+
+def remove_special_chars_and_spaces(s: str) -> str:
+    # 문자열 앞부분에서 특수문자와 공백을 제거
+    for i, char in enumerate(s):
+        if char.isalnum():
+            return s[i:]
+    return ""
 
 
 if __name__ == "__main__":

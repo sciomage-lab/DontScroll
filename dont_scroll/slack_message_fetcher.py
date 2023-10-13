@@ -7,24 +7,18 @@ from io import BytesIO
 
 import requests
 from PIL import Image, UnidentifiedImageError
-
 # For test
-from rich.progress import (
-    BarColumn,
-    Progress,
-    SpinnerColumn,
-    TaskProgressColumn,
-    TextColumn,
-    TimeElapsedColumn,
-    TimeRemainingColumn,
-)
+from rich.progress import (BarColumn, Progress, SpinnerColumn,
+                           TaskProgressColumn, TextColumn, TimeElapsedColumn,
+                           TimeRemainingColumn)
 from slack_sdk import WebClient
 
 from dont_scroll import config
 from dont_scroll.core.db.search import SearchEngine
 from dont_scroll.core.image_retrieval import ImageRetrieval
 from dont_scroll.logger import applogger
-from dont_scroll.utils import is_image_file, set_timescope, timestamp_to_str, unix_timestamp_to_datetime
+from dont_scroll.utils import (is_image_file, set_timescope, timestamp_to_str,
+                               unix_timestamp_to_datetime)
 
 
 class SlackMessageFetcher:
@@ -102,6 +96,7 @@ class SlackMessageFetcher:
                 text = message["text"] or "(empty)"
                 client_msg_id = message["client_msg_id"]
                 ts = float(message["ts"])
+                user_id = message["user"]
 
                 # Exist files
                 if "files" in message:
@@ -113,13 +108,16 @@ class SlackMessageFetcher:
                         file_url = file["url_private"]
                         file_id = file["id"]
 
-                        print(f"[{client_msg_id}] : {ts} : {timestamp_to_str(ts)} : {text} : {file_url[:100]}")
+                        print(
+                            f"[{client_msg_id}] : {ts} : {timestamp_to_str(ts)} : {text} : {file_url[:100]}"
+                        )
                         ret.append(
                             {
                                 "client_msg_id": f"{client_msg_id}-{file_id}",
                                 "text": text,
                                 "file_url": file_url,
                                 "ts": ts,
+                                "user_id": user_id,
                             }
                         )
                 else:
@@ -131,6 +129,7 @@ class SlackMessageFetcher:
                             "text": text,
                             "file_url": None,
                             "ts": ts,
+                            "user_id": user_id,
                         }
                     )
 
@@ -224,7 +223,7 @@ if __name__ == "__main__":
 
     # set tiemstamp
     # TODO :
-    start_datetime, end_datetime = set_timescope(2023, 9, 1, 0, 0, 0, 90, 0, 0, 0)
+    start_datetime, end_datetime = set_timescope(2023, 8, 1, 0, 0, 0, 90, 0, 0, 0)
 
     # ImageRetrieval
     image_retrieval = ImageRetrieval()
@@ -254,14 +253,15 @@ if __name__ == "__main__":
             text = message["text"]
             ts = message["ts"]
             file_url = message["file_url"]
+            user_id = message["user_id"]
 
-            is_exist = search.exist_msg_id(client_msg_id)
+            is_exist = search.search_by_msg_id(client_msg_id)
             if is_exist:
                 # already exists (duplicate)
-                continue 
+                continue
             elif file_url is not None:
                 # Exist file url
-            
+
                 # Get image
                 image_buf = slack_message_fetcher.get_image(file_url)
                 if image_buf is None:
@@ -272,13 +272,15 @@ if __name__ == "__main__":
 
                 # Insert DB
                 ts_datetime = unix_timestamp_to_datetime(ts)
-                search.add_vector(vector, file_url, client_msg_id, text, ts_datetime)
+                search.add_vector(
+                    user_id, vector, file_url, client_msg_id, text, ts_datetime
+                )
             else:
                 # No exist file url
 
                 # Insert DB
                 ts_datetime = unix_timestamp_to_datetime(ts)
-                search.add_message(client_msg_id, text, ts_datetime)
+                search.add_message(user_id, client_msg_id, text, ts_datetime)
 
             progress.advance(task)
 

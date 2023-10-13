@@ -1,0 +1,41 @@
+Junhyung: What should we eat for lunch today?
+Jisu: Eat salad!!
+Daeyun: No, I eat pizza.
+Junhyung: Okay, I want pizza today.
+Jisu: There's a problem with commit 4a94f. Why doesn't it run?
+Junhyung: I committed that. I think I deleted it by mistake. sorry.
+Daeyun: Haha, please fix it again.
+Junhyung: Yes..
+Junhyung: I'm going on a business trip to LA with Jisu next week.
+Daeyun: I will be alone in the office.
+Jisu: I’ll have a nice trip!
+Junhyung: What is the exhibition booth number?
+Daeyun: This is B-12.
+Jisu: Thank you. We will print 1,500 promotional materials.
+Junhyung: We plan to add schedule and todo functions to this version.
+Jisu: No, the todo function is missing, and only the alarm function is included.
+Junhyung: In version 1.0?
+Jisu: Yes, that’s right.
+Daeyun: I work from home.
+Junhyung: Today is my vacation.
+Jisu: I work outside.
+Sohee: I send my daughter to kindergarten and go to work in the afternoon.
+Gomdol: I’m taking a quick vacation today.
+Daeyun: What does L203 mean in commit 49faa? The logic is inefficient.
+Jisu: That will be updated in the next patch.
+Daeyun: What does it mean?
+Jisu: I created it because I needed it for the app log statistics function.
+Junhyung: I will talk to Jisu.
+Junhyung: Why is the development server dead?
+Jisu: An error occurred while I was testing.
+Daeyun: What's the problem?
+Junhyung: I can’t connect to the development server.
+Jisu: I think the token has expired. I'll get it reissued
+Daeyun: By when will it be resolved?
+Jisu: It will be resolved this afternoon.
+Jisu: You are now connected.
+Junhyung: Is anyone working overtime today?
+Daeyun: I'm going first.
+Jisu: I also have a lot to do, so I work overtime.
+Junhyung: Let’s eat salad.
+Jisu: Good.
