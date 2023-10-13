@@ -1,7 +1,5 @@
 import os
 
-import pytest
-
 from dont_scroll import config
 from dont_scroll.core.db.search import SearchEngine
 from dont_scroll.core.image_retrieval import ImageRetrieval
