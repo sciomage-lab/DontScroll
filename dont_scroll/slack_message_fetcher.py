@@ -102,6 +102,7 @@ class SlackMessageFetcher:
                 text = message["text"] or "(empty)"
                 client_msg_id = message["client_msg_id"]
                 ts = float(message["ts"])
+                user_id = message["user"]
 
                 # Exist files
                 if "files" in message:
@@ -120,6 +121,7 @@ class SlackMessageFetcher:
                                 "text": text,
                                 "file_url": file_url,
                                 "ts": ts,
+                                "user_id": user_id,
                             }
                         )
                 else:
@@ -131,6 +133,7 @@ class SlackMessageFetcher:
                             "text": text,
                             "file_url": None,
                             "ts": ts,
+                            "user_id": user_id,
                         }
                     )
 
@@ -254,6 +257,7 @@ if __name__ == "__main__":
             text = message["text"]
             ts = message["ts"]
             file_url = message["file_url"]
+            user_id = message["user_id"]
 
             is_exist = search.exist_msg_id(client_msg_id)
             if is_exist:
@@ -272,13 +276,13 @@ if __name__ == "__main__":
 
                 # Insert DB
                 ts_datetime = unix_timestamp_to_datetime(ts)
-                search.add_vector(vector, file_url, client_msg_id, text, ts_datetime)
+                search.add_vector(user_id, vector, file_url, client_msg_id, text, ts_datetime)
             else:
                 # No exist file url
 
                 # Insert DB
                 ts_datetime = unix_timestamp_to_datetime(ts)
-                search.add_message(client_msg_id, text, ts_datetime)
+                search.add_message(user_id, client_msg_id, text, ts_datetime)
 
             progress.advance(task)
 

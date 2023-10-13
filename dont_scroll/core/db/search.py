@@ -28,13 +28,14 @@ class SearchEngine:
             applogger.critical("DB connect fail")
 
     def add_vector(
-        self, vector: list, url: str, client_msg_id: str = None, text: str = None, ts_datetime: datetime.datetime = None
+        self, user_id: str, vector: list, url: str, client_msg_id: str = None, text: str = None, ts_datetime: datetime.datetime = None
     ):
         """Add vector
         :param list vector: input vector
         :param str url: input url
         """
         data = {
+            "user_id": user_id,
             "vector": f"CUBE(ARRAY[{vector}])",
             "file_url": url,
             "client_msg_id": client_msg_id,
@@ -45,13 +46,14 @@ class SearchEngine:
 
     # TODO :
     def add_message(
-        self, client_msg_id: str = None, text: str = None, ts_datetime: datetime.datetime = None
+        self, user_id: str, client_msg_id: str = None, text: str = None, ts_datetime: datetime.datetime = None
     ):
         """Add vector
         :param list vector: input vector
         :param str url: input url
         """
         data = {
+            "user_id": user_id,
             "client_msg_id": client_msg_id,
             "text": text,
             "ts": ts_datetime

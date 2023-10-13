@@ -34,6 +34,7 @@ psql -d dont_scroll_db -v ON_ERROR_STOP=1 --username $POSTGRES_USER <<-EOSQL
     CREATE EXTENSION IF NOT EXISTS cube;
 
     CREATE TABLE IF NOT EXISTS public.slack_message (
+        user_id TEXT,
         id SERIAL PRIMARY KEY,
         ts TIMESTAMP,
         vector CUBE,
