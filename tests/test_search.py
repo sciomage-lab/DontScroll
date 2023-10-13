@@ -45,13 +45,13 @@ def test_image_search(data_1, data_2, data_3, query, gt):
 
     # Add
     search.add_vector(
-        data_vector_1.tolist(), data_path_1, f"test-{generate_random_hash()}"
+        "test-user", data_vector_1.tolist(), data_path_1, f"test-{generate_random_hash()}"
     )
     search.add_vector(
-        data_vector_2.tolist(), data_path_2, f"test-{generate_random_hash()}"
+        "test-user", data_vector_2.tolist(), data_path_2, f"test-{generate_random_hash()}"
     )
     search.add_vector(
-        data_vector_3.tolist(), data_path_3, f"test-{generate_random_hash()}"
+        "test-user", data_vector_3.tolist(), data_path_3, f"test-{generate_random_hash()}"
     )
 
     # Search
@@ -114,16 +114,16 @@ def test_text_search(data_1, data_2, data_3, data_4, query, gt):
 
     # Add
     search.add_vector(
-        data_vector_1.tolist(), data_path_1, f"test-{generate_random_hash()}"
+        "test-user", data_vector_1.tolist(), data_path_1, f"test-{generate_random_hash()}"
     )
     search.add_vector(
-        data_vector_2.tolist(), data_path_2, f"test-{generate_random_hash()}"
+        "test-user", data_vector_2.tolist(), data_path_2, f"test-{generate_random_hash()}"
     )
     search.add_vector(
-        data_vector_3.tolist(), data_path_3, f"test-{generate_random_hash()}"
+        "test-user", data_vector_3.tolist(), data_path_3, f"test-{generate_random_hash()}"
     )
     search.add_vector(
-        data_vector_4.tolist(), data_path_4, f"test-{generate_random_hash()}"
+        "test-user", data_vector_4.tolist(), data_path_4, f"test-{generate_random_hash()}"
     )
 
     # Search
