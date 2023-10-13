@@ -28,7 +28,13 @@ class SearchEngine:
             applogger.critical("DB connect fail")
 
     def add_vector(
-        self, user_id: str, vector: list, url: str, client_msg_id: str = None, text: str = None, ts_datetime: datetime.datetime = None
+        self,
+        user_id: str,
+        vector: list,
+        url: str,
+        client_msg_id: str = None,
+        text: str = None,
+        ts_datetime: datetime.datetime = None,
     ):
         """Add vector
         :param list vector: input vector
@@ -40,13 +46,17 @@ class SearchEngine:
             "file_url": url,
             "client_msg_id": client_msg_id,
             "text": text,
-            "ts": ts_datetime
+            "ts": ts_datetime,
         }
         self.db_client.insert_data(data)
 
     # TODO :
     def add_message(
-        self, user_id: str, client_msg_id: str = None, text: str = None, ts_datetime: datetime.datetime = None
+        self,
+        user_id: str,
+        client_msg_id: str = None,
+        text: str = None,
+        ts_datetime: datetime.datetime = None,
     ):
         """Add vector
         :param list vector: input vector
@@ -56,7 +66,7 @@ class SearchEngine:
             "user_id": user_id,
             "client_msg_id": client_msg_id,
             "text": text,
-            "ts": ts_datetime
+            "ts": ts_datetime,
         }
         self.db_client.insert_data(data)
 
@@ -76,6 +86,14 @@ class SearchEngine:
         :param int n: top-n
         """
         ret = self.db_client.select_msg_id(msg_id, n)
+        return ret
+
+    def top_n_msg(self, n: int):
+        """
+        Search message
+        :param int n: top-n
+        """
+        ret = self.db_client.select_top_n_msg(n)
         return ret
 
     def exist_msg_id(self, msg_id: list):

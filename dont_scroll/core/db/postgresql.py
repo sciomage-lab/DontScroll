@@ -97,7 +97,6 @@ class PostgreSQLClient:
         """
         self.cursor.execute(
             f"SELECT *, vector <-> cube(ARRAY{vector}) AS distance FROM {self.db_table} ORDER BY distance LIMIT {n}"
-
         )
         result = self.cursor.fetchall()
         if result:
@@ -112,6 +111,19 @@ class PostgreSQLClient:
         """
         self.cursor.execute(
             f"SELECT * FROM {self.db_table} where client_msg_id like '{msg_id}' ORDER BY vector LIMIT {n}"
+        )
+        result = self.cursor.fetchall()
+        if result:
+            col_names = [desc[0] for desc in self.cursor.description]
+            return [dict(zip(col_names, row)) for row in result]
+        return None
+
+    def select_top_n_msg(self, n):
+        """Select message
+        :param int n: top-n
+        """
+        self.cursor.execute(
+            f"SELECT user_id, ts, text FROM {self.db_table} ORDER BY ts LIMIT {n}"
         )
         result = self.cursor.fetchall()
         if result:

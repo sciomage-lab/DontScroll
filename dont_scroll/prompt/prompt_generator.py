@@ -1,9 +1,8 @@
 import os
 
+
 class PromptGenerator:
-
-    def __init__(self):
-
+    def __init__(self, message: str=None, question=None):
         # TODO: Options
         self.prompt_root = os.path.dirname(os.path.abspath(__file__))
 
@@ -16,15 +15,15 @@ class PromptGenerator:
         if not os.path.exists(f"{self.prompt_root}/chat.txt"):
             print(f"not exists {self.prompt_root}/chat.txt")
 
-    def __str__(self):
+        self.message = message
+        self.question = question
 
-        # TODO: condition 
+    def __str__(self):
+        # TODO: condition
 
         return self.gen_chat_ml()
 
-
     def gen_chat_ml(self):
-
         ret = ""
 
         # System
@@ -36,16 +35,27 @@ class PromptGenerator:
         ret += "<|im_start|>user\n"
         ret += self.read_txt_file(f"{self.prompt_root}/user-pre.txt")
         ret += "\n"
-        ret += self.read_txt_file(f"{self.prompt_root}/chat.txt")
+
+        # Chat
+        ret += "```text\n"
+        if self.message is None:
+            ret += self.read_txt_file(f"{self.prompt_root}/chat.txt")
+        else:
+            ret += self.message
+        ret += "```"
         ret += "\n"
-        ret += self.read_txt_file(f"{self.prompt_root}/user-post.txt")
+
+        # Question 
+        if self.question is None:
+            ret += self.read_txt_file(f"{self.prompt_root}/user-post.txt")
+        else:
+            ret += self.question
         ret += "<|im_end|>\n"
         ret += "<|im_start|>assistant"
 
         return ret
 
     def read_txt_file(self, file_path):
-
         if not os.path.exists(file_path):
             print(f"not exists {file_path}")
             return None
@@ -57,9 +67,8 @@ class PromptGenerator:
 
         return text.rstrip("\n")
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     prompt_generator = PromptGenerator()
 
     print(prompt_generator)
-

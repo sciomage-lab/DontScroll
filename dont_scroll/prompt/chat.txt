@@ -1,4 +1,3 @@
-```text
 Junhyung: What should we eat for lunch today?
 Jisoo: Eat salad!!
 Daeyun: No, I eat pizza.
@@ -40,4 +39,3 @@ Daeyun: I'm going first.
 Jisoo: I also have a lot to do, so I work overtime.
 Junhyung: Let’s eat salad.
 Jisoo: Good.
-```
