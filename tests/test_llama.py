@@ -11,7 +11,7 @@ if __name__ == "__main__":
     test_messages = text_message.get_all_message()
     print(f"{test_messages}")
 
-    llm = Llama(model_path="models/tinyllama-2-1b-miniguanaco.Q5_K_M.gguf", n_ctx=2048)
+    llm = Llama(model_path="models/llama-2-7b-arguments.Q4_K_M.gguf", n_ctx=2048)
 
     prompt_generator = PromptGenerator(test_messages, "Where is the company car?")
     prompt = str(prompt_generator)
