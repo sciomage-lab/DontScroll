@@ -43,9 +43,8 @@ XXX : Set API Key to `~/.config/dont_scroll/default.toml`
 Please refer to [this document.](./docker/postgres/README.md)
 
 ```bash
-cd docker/postgres
-./stop.sh
-./start.sh
+./docker/postgres/stop.sh
+./docker/postgres/start.sh
 ```
 
 ## Run DontScroll docker
@@ -53,9 +52,8 @@ cd docker/postgres
 Please refer to [this document.](./docker/DontScroll/README.md)
 
 ```bash
-cd docker/DontScroll
-./stop.sh
-./start.sh
+./docker/DontScroll/stop.sh
+./docker/DontScroll/start.sh
 ```
 
 ```bash
