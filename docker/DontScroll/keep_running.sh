@@ -7,7 +7,7 @@ echo $PYTHONPATH
 ./save_envs.sh
 
 mkdir models
-wget -O models/tinyllama-1.1b-1t-openorca.Q5_K_M.gguf https://huggingface.co/TheBloke/TinyLlama-1.1B-1T-OpenOrca-GGUF/resolve/main/tinyllama-1.1b-1t-openorca.Q5_K_M.gguf
+wget -q -O models/llama-2-7b-arguments.Q4_K_M.gguf https://huggingface.co/TheBloke/llama-2-7B-Arguments-GGUF/resolve/main/llama-2-7b-arguments.Q4_K_M.gguf
 
 python dont_scroll/slack_message_fetcher.py
 
