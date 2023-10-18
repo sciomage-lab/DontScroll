@@ -7,7 +7,7 @@ psycopg2
 
 torch
 - https://github.com/pytorch/pytorch
-- XXX
+- Apache License 2.0
 
 torchvision
 - https://github.com/pytorch/vision
@@ -32,7 +32,7 @@ toml==0.10.2
 
 typing_extensions==4.7.1
 - https://github.com/python/typing_extensions
-- XXX
+- PSF License
 
 slack_bolt(bolt-python)
 - https://github.com/slackapi/bolt-python
