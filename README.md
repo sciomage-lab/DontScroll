@@ -79,3 +79,9 @@ Our configuration file follows the TOML format.
 ```toml
 SLACK_SIGNING_SECRET = "<Your slack SINGING_SECRET_KEY>"
 ```
+
+## License
+DontScroll has a `Sciomage LAB Public license`, as found in the [LICENSE](LICENSE.md) file.
+
+## 3rd party licenses
+Please refer to the [documentation](docs/license-list.md) for 3rd party licenses.
