@@ -68,7 +68,9 @@ TEST_MESSAGE = TEXT_MESSAGE.get_all_message()
 TEMPLATE = "llama2-chat"
 
 # LLM Model
+print("load llama model start...")
 llm = Llama(model_path="models/llama-2-7b-arguments.Q4_K_M.gguf", n_ctx=2048)
+print("load llama model done.")
 
 # warmup
 print("warmup start...")
