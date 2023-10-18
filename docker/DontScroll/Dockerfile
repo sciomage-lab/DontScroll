@@ -1,6 +1,9 @@
 FROM python:3.8.10
 RUN python3 --version
 
+# Branch name (for github action script)
+ARG BRANCH_NAME=main
+
 # Update Python & Install wheel
 RUN python3 -m pip install pip --upgrade
 RUN python3 -m pip install wheel
@@ -9,7 +12,7 @@ RUN python3 -m pip install wheel
 RUN pip install --upgrade pip setuptools wheel
 
 # Git clone
-RUN git clone https://github.com/sciomage-lab/DontScroll.git /app
+COPY . /app
 
 # Set the working directory
 WORKDIR /app
@@ -18,11 +21,11 @@ WORKDIR /app
 RUN pip install -r requirements.txt
 
 # Set env
-COPY save_envs.sh /app/save_envs.sh
+COPY docker/DontScroll/save_envs.sh /app/save_envs.sh
 RUN chmod +x /app/save_envs.sh && /app/save_envs.sh
 
 # Copy main script
-COPY keep_running.sh /app/keep_running.sh
+COPY docker/DontScroll/keep_running.sh /app/keep_running.sh
 RUN chmod +x /app/keep_running.sh
 
 # Set environment variables

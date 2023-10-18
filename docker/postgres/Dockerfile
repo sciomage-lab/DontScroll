@@ -26,7 +26,7 @@ ENV PATH="/usr/local/pgsql/bin:${PATH}"
 ENV PGDATA="/var/lib/postgresql/data"
 
 # docker-entrypoint.sh를 추가합니다.
-COPY ./docker-entrypoint.sh /home/postgres/docker-entrypoint.sh
+COPY ./docker/postgres/docker-entrypoint.sh /home/postgres/docker-entrypoint.sh
 RUN chmod +x /home/postgres/docker-entrypoint.sh
 
 # 데이터 디렉토리를 설정하고 PostgreSQL을 초기화합니다.

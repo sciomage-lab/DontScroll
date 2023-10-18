@@ -1,4 +1,4 @@
 #!/bin/bash
 
-docker build -t cube-postgres:13 .
-docker-compose up -d
+docker build -f ./docker/postgres/Dockerfile -t cube-postgres:13 .
+docker-compose -f docker/postgres/docker-compose.yml up -d
