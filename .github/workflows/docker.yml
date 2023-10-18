@@ -11,6 +11,13 @@ on:
 jobs:
   docker-build-and-test:
     runs-on: ubuntu-latest
+    environment: slack-api-key # Github Environments name
+    env:
+      BOT_USER_OAUTH_TOKEN: ${{ secrets.BOT_USER_OAUTH_TOKEN }}
+      SLACK_APP_TOKEN: ${{ secrets.SLACK_APP_TOKEN }}
+      SLACK_SIGNING_SECRET: ${{ secrets.SLACK_SIGNING_SECRET }}
+      CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+
     strategy:
       matrix:
         os: [ ubuntu-latest ]
@@ -44,19 +51,21 @@ jobs:
         echo "PYTHONPATH=$env:GITHUB_WORKSPACE" >> $env:GITHUB_ENV
       if: matrix.os == 'windows-latest'
 
-    - name: Stop Docker containers
+    - name: Stop PostgreSQL Docker containers
       run: |
-        cd docker/postgres
-        ./stop.sh
+        ./docker/postgres/stop.sh
 
-    - name: Build Docker image
+    - name: Build & Start PostgreSQL Docker containers
       run: |
-        docker build -t cube-postgres:13 docker/postgres/
+        ./docker/postgres/start.sh
 
-    - name: Start Docker containers
+    - name: Stop DontScroll Docker containers
       run: |
-        cd docker/postgres
-        docker-compose up -d
+        ./docker/DontScroll/stop.sh
+
+    - name: Build & Start DontScroll Docker containers
+      run: |
+        ./docker/DontScroll/start.sh
 
     - name: Wait for 10 seconds
       run: sleep 10

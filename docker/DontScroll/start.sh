@@ -25,9 +25,9 @@ fi
 # Build
 docker build \
       --progress=plain \
-      -f Dockerfile \
+      -f ./docker/DontScroll/Dockerfile \
       -t dont-scroll:${tag} .
       # --no-cache \
 
 # Run
-docker-compose up -d
+docker-compose -f docker/DontScroll/docker-compose.yml up -d 
