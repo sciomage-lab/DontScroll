@@ -1,5 +1,5 @@
 
-# Python
+# Python package
 
 psycopg2
 - https://github.com/psycopg/psycopg2
