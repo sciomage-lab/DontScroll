@@ -7,18 +7,29 @@ from io import BytesIO
 
 import requests
 from PIL import Image, UnidentifiedImageError
+
 # For test
-from rich.progress import (BarColumn, Progress, SpinnerColumn,
-                           TaskProgressColumn, TextColumn, TimeElapsedColumn,
-                           TimeRemainingColumn)
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TaskProgressColumn,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
 from slack_sdk import WebClient
 
 from dont_scroll import config
 from dont_scroll.core.db.search import SearchEngine
 from dont_scroll.core.image_retrieval import ImageRetrieval
 from dont_scroll.logger import applogger
-from dont_scroll.utils import (is_image_file, set_timescope, timestamp_to_str,
-                               unix_timestamp_to_datetime)
+from dont_scroll.utils import (
+    is_image_file,
+    set_timescope,
+    timestamp_to_str,
+    unix_timestamp_to_datetime,
+)
 
 
 class SlackMessageFetcher:

@@ -137,13 +137,22 @@ if __name__ == "__main__":
 
     # Add
     search.add_vector(
-        "test-user", image_vector_1.tolist(), image_path_1, f"test-{generate_random_hash()}"
+        "test-user",
+        image_vector_1.tolist(),
+        image_path_1,
+        f"test-{generate_random_hash()}",
     )
     search.add_vector(
-        "test-user", image_vector_3.tolist(), image_path_3, f"test-{generate_random_hash()}"
+        "test-user",
+        image_vector_3.tolist(),
+        image_path_3,
+        f"test-{generate_random_hash()}",
     )
     search.add_vector(
-        "test-user", image_vector_4.tolist(), image_path_4, f"test-{generate_random_hash()}"
+        "test-user",
+        image_vector_4.tolist(),
+        image_path_4,
+        f"test-{generate_random_hash()}",
     )
 
     # Search : Image

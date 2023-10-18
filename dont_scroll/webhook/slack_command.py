@@ -1,5 +1,8 @@
 import argparse
 import os
+import math
+import time
+import datetime
 
 from llama_cpp import Llama
 from slack_bolt import App
@@ -59,13 +62,22 @@ search = SearchEngine(
 )
 
 # Text Message
-text_message = TextMessage()
-test_messages = text_message.get_all_message()
-print(f"{test_messages}")
+TEXT_MESSAGE = TextMessage()
+TEST_MESSAGE = TEXT_MESSAGE.get_all_message()
+
+TEMPLATE = "llama2-chat"
 
 # LLM Model
-llm = Llama(model_path="models/tinyllama-1.1b-1t-openorca.Q5_K_M.gguf", n_ctx=2048)
+llm = Llama(model_path="models/llama-2-7b-arguments.Q4_K_M.gguf", n_ctx=2048)
 
+# warmup
+print("warmup start...")
+time_start = time.time()
+prompt_generator = PromptGenerator(TEST_MESSAGE, "warmup", template=TEMPLATE)
+prompt = str(prompt_generator)
+llm(prompt, temperature=0.1)
+time_end = time.time()
+print(f"warmup : {datetime.timedelta(seconds=(time_end - time_start))}")
 
 # Initializes your app with your bot token and socket mode handler
 # get client
@@ -86,8 +98,9 @@ else:
 
 # https://api.slack.com/apps -> DontScroll
 # Feature -> Slash Commands -> Crate New Command -> 내부 항목 추가
-@app.command("/find")
-def handle_welcome_command(ack, command, respond):
+@app.command("/f")
+def handle_find_command(ack, command, respond):
+    print("find")
     ack()
 
     user_id = command["user_id"]
@@ -107,19 +120,21 @@ def handle_welcome_command(ack, command, respond):
     respond(response_text)
 
 
+# https://api.slack.com/apps -> DontScroll
+# Feature -> Slash Commands -> Crate New Command -> 내부 항목 추가
 @app.command("/q")
-def handle_welcome_command(ack, command, respond):
+def handle_query_command(ack, command, respond):
     ack()
 
     user_id = command["user_id"]
     query = command["text"]
 
-    prompt_generator = PromptGenerator(test_messages, query)
+    prompt_generator = PromptGenerator(TEST_MESSAGE, query, template=TEMPLATE)
     prompt = str(prompt_generator)
 
     print(f"prompt : {prompt}")
 
-    output = llm(prompt, temperature=0.2)
+    output = llm(prompt, temperature=0.1)
     print(output)
     print("===== RESULT =====")
     result = remove_special_chars_and_spaces(output["choices"][0]["text"])
