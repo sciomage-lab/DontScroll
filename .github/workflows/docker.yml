@@ -11,6 +11,13 @@ on:
 jobs:
   docker-build-and-test:
     runs-on: ubuntu-latest
+    environment: slack-api-key # Github Environments name
+    env:
+      BOT_USER_OAUTH_TOKEN: ${{ secrets.BOT_USER_OAUTH_TOKEN }}
+      SLACK_APP_TOKEN: ${{ secrets.SLACK_APP_TOKEN }}
+      SLACK_SIGNING_SECRET: ${{ secrets.SLACK_SIGNING_SECRET }}
+      CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+
     strategy:
       matrix:
         os: [ ubuntu-latest ]
