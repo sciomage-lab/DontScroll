@@ -12,27 +12,32 @@ import logging
 import sys
 
 
-class CustomFormatter(logging.Formatter):
-    grey = "\x1b[38;20m"
-    yellow = "\x1b[33;20m"
-    red = "\x1b[31;20m"
-    bold_red = "\x1b[31;1m"
-    reset = "\x1b[0m"
-    format = (
+class ColoredLogFormatter(logging.Formatter):
+    
+    COLOR_CODES = {
+        'grey': "\x1b[38;20m",
+        'yellow': "\x1b[33;20m",
+        'red': "\x1b[31;20m",
+        'bold_red': "\x1b[31;1m",
+        'reset': "\x1b[0m",
+    }
+
+    DEFAULT_FORMAT = (
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
     )
 
-    FORMATS = {
-        logging.DEBUG: grey + format + reset,
-        logging.INFO: grey + format + reset,
-        logging.WARNING: yellow + format + reset,
-        logging.ERROR: red + format + reset,
-        logging.CRITICAL: bold_red + format + reset,
+    LEVEL_TO_COLOR = {
+        logging.DEBUG: COLOR_CODES['grey'],
+        logging.INFO: COLOR_CODES['grey'],
+        logging.WARNING: COLOR_CODES['yellow'],
+        logging.ERROR: COLOR_CODES['red'],
+        logging.CRITICAL: COLOR_CODES['bold_red'],
     }
 
     def format(self, record):
-        log_fmt = self.FORMATS.get(record.levelno)
-        formatter = logging.Formatter(log_fmt)
+        color_code = self.LEVEL_TO_COLOR.get(record.levelno, self.COLOR_CODES['reset'])
+        log_format = f"{color_code}{self.DEFAULT_FORMAT}{self.COLOR_CODES['reset']}"
+        formatter = logging.Formatter(log_format)
         return formatter.format(record)
 
 
@@ -50,7 +55,7 @@ else:
     formatter = logging.Formatter(
         fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
-    stream_handler.setFormatter(CustomFormatter())
+    stream_handler.setFormatter(ColoredLogFormatter())
     logging.basicConfig(level=logging.INFO, handlers=[stream_handler])
 
 applogger.addHandler(stream_handler)
