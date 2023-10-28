@@ -5,6 +5,11 @@ Don’t scroll : AI를 활용한 이미지에 특화된 파일검색 엔진 플�
 
 # How to start
 
+clone
+```bash
+git clone --recursive https://github.com/sciomage-lab/DontScroll.git
+```
+
 ## 1. Slack bot setup
 
 Create your own Slack bot.
@@ -31,6 +36,34 @@ Please refer to the [documentation.](./tools/README.md) for more details.
 ```
 
 ## 3.1. Running via Docker (recommended)
+
+Install Docker
+
+```
+sudo apt install docker.io
+sudo apt install docker-compose
+```
+
+Install venv
+```bash
+python -m venv .venv # or python3 -m venv .venv
+. .venv/bin/activate
+python -V
+```
+# How to setup
+
+```sh
+pip install -r requirements.txt
+```
+
+# Set `PYTHONPATH`
+
+```bash
+export PYTHONPATH="${PYTHONPATH}:$(pwd)"
+echo $PYTHONPATH
+```
+
+
 
 ### 3.1.1. Run postgres docker
 

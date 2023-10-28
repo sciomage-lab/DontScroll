@@ -16,7 +16,9 @@ echo $PYTHONPATH
 ./save_envs.sh
 
 mkdir -p models
+echo "Download gguf file..."
 wget -q -nc -O models/llama-2-7b-arguments.Q4_K_M.gguf https://huggingface.co/TheBloke/llama-2-7B-Arguments-GGUF/resolve/main/llama-2-7b-arguments.Q4_K_M.gguf
+echo "Download gguf file done."
 
 python dont_scroll/slack_message_fetcher.py
 
