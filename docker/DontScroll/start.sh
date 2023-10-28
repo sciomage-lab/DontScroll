@@ -33,7 +33,6 @@ fi
 
 # Build
 docker build \
-      --progress=plain \
       -f ./docker/DontScroll/Dockerfile \
       -t dont-scroll:${tag} .
       # --no-cache \
