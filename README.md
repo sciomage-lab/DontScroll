@@ -7,10 +7,10 @@ Don’t scroll : AI를 활용한 이미지에 특화된 파일검색 엔진 플�
 
 # Demo
 
-![docs/image-search.mov](docs/image-search.mov)
+![docs/image-search.gif](docs/image-search.gif)
 
 
-![docs/book-slack.gif](docs/book-slack.gif)
+![docs/who-bought-the-laptop.mp4](docs/who-bought-the-laptop.mp4)
 
 
 # How to start
