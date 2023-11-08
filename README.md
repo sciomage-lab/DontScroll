@@ -5,6 +5,14 @@ Don’t scroll : AI를 활용한 이미지에 특화된 파일검색 엔진 플�
 
 ![docs/diagram.png](docs/diagram.png)
 
+# Demo
+
+![docs/image-search.gif](docs/image-search.gif)
+
+
+![docs/who-bought-the-laptop.mp4](docs/who-bought-the-laptop.mp4)
+
+
 # How to start
 
 clone
