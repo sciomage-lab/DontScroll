@@ -5,6 +5,14 @@ Don’t scroll : AI를 활용한 이미지에 특화된 파일검색 엔진 플�
 
 ![docs/diagram.png](docs/diagram.png)
 
+# Demo
+
+![docs/image-search.mov](docs/image-search.mov)
+
+
+![docs/book-slack.gif](docs/book-slack.gif)
+
+
 # How to start
 
 clone
