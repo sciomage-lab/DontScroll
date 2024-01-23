@@ -60,20 +60,25 @@ python -m venv .venv # or python3 -m venv .venv
 . .venv/bin/activate
 python -V
 ```
-# How to setup
 
+
+```
+sudo apt install build-essential
+sudo apt install python3-dev
+sudo apt install libpq-dev
+```
+
+Install requirements.txt
 ```sh
 pip install -r requirements.txt
 ```
 
-# Set `PYTHONPATH`
+Set `PYTHONPATH`
 
 ```bash
 export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 echo $PYTHONPATH
 ```
-
-
 
 ### 3.1.1. Run postgres docker
 
