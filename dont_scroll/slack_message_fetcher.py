@@ -244,7 +244,7 @@ if __name__ == "__main__":
 
     # set tiemstamp
     # TODO :
-    start_datetime, end_datetime = set_timescope(2023, 8, 1, 0, 0, 0, 90, 0, 0, 0)
+    start_datetime, end_datetime = set_timescope(2024, 10, 1, 0, 0, 0, 90, 0, 0, 0)
 
     # ImageRetrieval
     image_retrieval = ImageRetrieval()
@@ -316,10 +316,9 @@ if __name__ == "__main__":
 
     # TEST
     # TODO :
-    query = "hedgehog"
+    query = "the box"
     query_vector = image_retrieval.text_to_vector(query)
 
     ret = search.search_vector(query_vector.tolist(), 3)
-    print(ret[0]["file_url"])
-    print(ret[1]["file_url"])
-    print(ret[2]["file_url"])
+    for c in ret[:3]:
+        print(f"{c['file_url']} {c['distance']}")

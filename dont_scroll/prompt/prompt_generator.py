@@ -41,6 +41,8 @@ class PromptGenerator:
             return self.gen_llama2_chat()
         elif self.template == "chat-ml":
             return self.gen_chat_ml()
+        if self.template == "llama32":
+            return self.gen_llama32()
         else:
             return self.gen_chat_ml()
 
@@ -103,6 +105,38 @@ class PromptGenerator:
         else:
             ret += self.question
         ret += "[/INST]"
+
+        return ret
+
+    def gen_llama32(self):
+        ret = ""
+
+        # System
+        ret += "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n"
+        ret += "Cutting Knowledge Date: December 2023\n"
+        ret += "Today Date: 9 Oct 2024\n\n"
+        ret += self.read_txt_file(f"{self.prompt_root}/system.txt")
+        ret += "\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n"
+
+        # User
+        ret += self.read_txt_file(f"{self.prompt_root}/user-pre.txt")
+        ret += "\n"
+
+        # Chat
+        ret += "```text\n"
+        if self.message is None:
+            ret += self.read_txt_file(f"{self.prompt_root}/chat.txt")
+        else:
+            ret += self.message
+        ret += "```"
+        ret += "\n"
+
+        # Question
+        if self.question is None:
+            ret += self.read_txt_file(f"{self.prompt_root}/user-post.txt")
+        else:
+            ret += self.question
+        ret += "<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
 
         return ret
 

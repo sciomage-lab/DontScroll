@@ -75,11 +75,11 @@ search = SearchEngine(
 TEXT_MESSAGE = TextMessage()
 TEST_MESSAGE = TEXT_MESSAGE.get_all_message()
 
-TEMPLATE = "llama2-chat"
+TEMPLATE = "llama32"
 
 # LLM Model
 print("load llama model start...")
-llm = Llama(model_path="models/llama-2-7b-arguments.Q4_K_M.gguf", n_ctx=2048)
+llm = Llama(model_path="models/Llama-3.2-3B-Instruct-Q6_K.gguf", n_ctx=2048)
 print("load llama model done.")
 
 # warmup
@@ -87,7 +87,7 @@ print("warmup start...")
 time_start = time.time()
 prompt_generator = PromptGenerator(TEST_MESSAGE, "warmup", template=TEMPLATE)
 prompt = str(prompt_generator)
-llm(prompt, temperature=0.1)
+llm(prompt, temperature=0.6)
 time_end = time.time()
 print(f"warmup : {datetime.timedelta(seconds=(time_end - time_start))}")
 
