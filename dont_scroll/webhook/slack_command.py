@@ -75,11 +75,11 @@ search = SearchEngine(
 TEXT_MESSAGE = TextMessage()
 TEST_MESSAGE = TEXT_MESSAGE.get_all_message()
 
-TEMPLATE = "llama32"
+TEMPLATE = "llama32_ko"
 
 # LLM Model
 print("load llama model start...")
-llm = Llama(model_path="models/Llama-3.2-3B-Instruct-Q6_K.gguf", n_ctx=2048)
+llm = Llama(model_path="models/llama-3-Korean-Bllossom-8B-Q4_K_M.gguf", n_ctx=2048)
 print("load llama model done.")
 
 # warmup
