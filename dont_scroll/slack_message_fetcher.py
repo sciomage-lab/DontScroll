@@ -244,7 +244,7 @@ if __name__ == "__main__":
 
     # set tiemstamp
     # TODO :
-    start_datetime, end_datetime = set_timescope(2023, 8, 1, 0, 0, 0, 90, 0, 0, 0)
+    start_datetime, end_datetime = set_timescope(2025, 1, 1, 0, 0, 0, 90, 0, 0, 0)
 
     # ImageRetrieval
     image_retrieval = ImageRetrieval()

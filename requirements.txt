@@ -1,8 +1,9 @@
 # Configs
-psycopg2
+psycopg2-binary
 
 # Torch
 --extra-index-url https://download.pytorch.org/whl/cpu
+numpy<2
 torch
 torchvision
 
