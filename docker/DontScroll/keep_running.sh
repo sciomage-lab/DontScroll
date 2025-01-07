@@ -17,7 +17,7 @@ echo $PYTHONPATH
 
 mkdir -p models
 echo "Download gguf file..."
-wget -q -nc -O models/llama-3-Korean-Bllossom-8B-Q4_K_M.ggu https://huggingface.co/MLP-KTLim/llama-3-Korean-Bllossom-8B-gguf-Q4_K_M/resolve/main/llama-3-Korean-Bllossom-8B-Q4_K_M.gguf
+wget -q -nc -O models/llama-3-Korean-Bllossom-8B-Q4_K_M.gguf https://huggingface.co/MLP-KTLim/llama-3-Korean-Bllossom-8B-gguf-Q4_K_M/resolve/main/llama-3-Korean-Bllossom-8B-Q4_K_M.gguf
 echo "Download gguf file done."
 
 python dont_scroll/slack_message_fetcher.py
