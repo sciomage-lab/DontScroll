@@ -166,8 +166,10 @@ class PromptGenerator:
 
         # Question
         if self.question is None:
+            ret += "Question : "
             ret += self.read_txt_file(f"{self.prompt_root}/user-post.txt")
         else:
+            ret += "질문 : "
             ret += self.question
         ret += "<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
 
